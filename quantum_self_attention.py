@@ -1,39 +1,52 @@
-from qiskit import QuantumCircuit, ClassicalRegister
-from qiskit_aer import AerSimulator
+from qiskit import QuantumCircuit
+from qiskit.circuit import Parameter
 from qiskit.extensions import UnitaryGate
 import numpy as np
 
-# Use AerSimulator
-simulator = AerSimulator()
-# Create a Quantum Circuit
-circuit = QuantumCircuit(4)
 
-# Add classical register to measure output
-cr = ClassicalRegister(2, name='Z')
-circuit.add_register(cr)
+class QuantumSelfAttention:
+    def __init__(self, num_qubits=4):
+        self.num_qubits = num_qubits
+        self.circuit = QuantumCircuit(num_qubits)
 
-# X data encoding
-x_theta = 0.3
-circuit.ry(x_theta, 0)
+        # Parameters to be optimized
+        self.x = Parameter('x')
+        self.theta = Parameter('theta')
+        self.phi = Parameter('phi')
 
-# Theta embedding
-theta = 0.3
-circuit.ry(theta, 1)
+        # Weighted matrix for g linear embedding
+        self.weighted_matrix_g = np.eye(2)  # Identity matrix as default
 
-# Phi embedding
-phi = 0.3
-circuit.ry(phi, 2)
+        # Parameters
+        self.parameters = None
 
-# Linear (g) embedding - Unitary Gate
-weighted_matrix_g = np.array([[1, 0], [0, 1]])
-unitary_g = UnitaryGate(weighted_matrix_g, label="Unitary (W_g)")
-circuit.append(unitary_g, [3])
+        # Create the circuit
+        self.build_circuit()
 
-# Tensor Product (theta and phi) - using CNOT gate
-circuit.cx(1, 2)
+    def build_circuit(self):
 
-# Tensor Product (gaussian and linear) - using CNOT gate
-circuit.cx(2, 3)
+        # X data embedding
+        self.circuit.ry(self.x, 0)
+        # theta embedding
+        self.circuit.ry(self.theta, 1)
+        # phi embedding
+        self.circuit.ry(self.phi, 2)
 
-# Measure qubit 0 (X) and embedding (qubit 3)
-circuit.measure([0, 3], cr)
+        unitary_g = UnitaryGate(self.weighted_matrix_g, label="Unitary (W_g)")
+        self.circuit.append(unitary_g, [3])
+
+        # Entanglement using CNOT gate -Tensor Product (theta and phi)
+        self.circuit.cx(1, 2)
+
+        # Entanglement using CNOT gate - Tensor Product (gaussian and linear)
+        self.circuit.cx(2, 3)
+
+    def circuit_parameters(self):
+        # Set parameters
+        self.parameters = {self.x, self.theta, self.phi}
+
+        return self.parameters
+
+    def get_circuit(self):
+        return self.circuit
+

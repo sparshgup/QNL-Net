@@ -2,7 +2,7 @@
 
 Sample Quantum Self-Attention Variational Circuit:
 
-![QuantumSelfAttention_SampleCircuit.png](docs%2FQuantumSelfAttention_SampleCircuit.png)
+![QuantumSelfAttention_Circuit.png](docs%2FQuantumSelfAttention_Circuit.png)
 
 
 ### Reference
