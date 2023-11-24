@@ -59,14 +59,15 @@ class HybridCNNQSA(Module):
         self.conv2 = Conv2d(2, 16, kernel_size=5)
         self.dropout = Dropout2d()
         self.fc1 = Linear(256, 64)
-        self.fc2 = Linear(64, 4)  # 4-dimensional input to QSA-NN
+        self.fc2 = Linear(64, num_qubits)  # 4-dimensional input to QSA-NN
 
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].
         self.qsa_nn = TorchConnector(qsa_nn)
 
-        # 10-dimensional output from QSA-NN
-        self.output_layer = Linear(10, output_shape)
+        # output from QSA-NN
+        self.output_layer = Linear(output_shape, 1)
+        # set to (output_shape, batch_size) if batch_size > 1
 
     def forward(self, x):
         # CNN
@@ -82,9 +83,11 @@ class HybridCNNQSA(Module):
         # QSA-NN
         x = self.qsa_nn(x)
 
-        # Post-QSA Classical computation
-        x = self.output_layer(x)
-        x = sum(x, dim=0)  # Sum the tensors to get (10,1)
-        x = F.softmax(x, dim=0)  # Apply Softmax layer for multiclass probs
+        # # Post-QSA Classical computation (only use if batch_size > 1)
+        # x = self.output_layer(x)
+        # x = sum(x, dim=0)  # Sum the tensors
+
+        # Post-QSA Softmax layer for multiclass probabilities
+        x = F.softmax(x, dim=0)
 
         return x

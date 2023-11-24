@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import torch
 from torch import manual_seed
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
@@ -29,8 +30,8 @@ print("----------------------------------------------")
 # Set train shuffle seed (for reproducibility)
 manual_seed(42)
 
-batch_size = 10
-n_samples = 10
+batch_size = 1
+n_samples = 100
 
 # Use pre-defined torchvision function to load MNIST train data
 X_train = datasets.MNIST(
@@ -60,11 +61,11 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 loss_func = CrossEntropyLoss()
 
 # Start training
-epochs = 2  # Set number of epochs
+num_epochs = 5  # Set number of epochs
 loss_list = []  # Store loss history
 model.train()  # Set model to training mode
 
-for epoch in range(epochs):
+for epoch in range(num_epochs):
 
     total_loss = []
 
@@ -72,7 +73,7 @@ for epoch in range(epochs):
 
         optimizer.zero_grad(set_to_none=True)  # Initialize gradient
         output = model(data)  # Forward pass
-        target = target.float()
+        # target = target.float() (only use if using sum in model forward pass)
         loss = loss_func(output, target)  # Calculate loss
         loss.backward()  # Backward pass
         optimizer.step()  # Optimize weights
@@ -80,7 +81,19 @@ for epoch in range(epochs):
 
     loss_list.append(sum(total_loss) / len(total_loss))
 
-    print("Training [{:.0f}%]\tLoss: {:.4f}".format(100.0 * (epoch + 1) / epochs, loss_list[-1]))
+    print("Training [{:.0f}%]\tLoss: {:.4f}".format(100.0 * (epoch + 1) /
+                                                    num_epochs, loss_list[-1]))
+
+
+# Save Model
+torch.save(
+    model.state_dict(),
+    f"model/model_{n_samples}samples_{num_epochs}epochs.pt"
+)
+
+print("----------------------------------------------")
+print("Model Saved Successfully")
+print("----------------------------------------------")
 
 
 # Runtime
