@@ -1,5 +1,3 @@
-from qiskit_machine_learning.neural_networks import SamplerQNN
-
 from quantum_self_attention import QuantumSelfAttention
 
 from torch import sum
@@ -14,7 +12,8 @@ from qiskit_machine_learning.connectors import TorchConnector
 
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZZFeatureMap
-from qiskit_machine_learning.algorithms import VQC
+
+from qiskit_machine_learning.neural_networks import SamplerQNN
 
 
 num_qubits = 4
@@ -66,10 +65,11 @@ class HybridCNNQSA(Module):
         # uniformly at random from interval [-1,1].
         self.qsa_nn = TorchConnector(qsa_nn)
 
-        # 1-dimensional output from QSA-NN
-        self.output_layer = Linear(10, 10)
+        # 10-dimensional output from QSA-NN
+        self.output_layer = Linear(10, output_shape)
 
     def forward(self, x):
+        # CNN
         x = F.relu(self.conv1(x))
         x = F.max_pool2d(x, 2)
         x = F.relu(self.conv2(x))
@@ -78,6 +78,13 @@ class HybridCNNQSA(Module):
         x = x.view(x.shape[0], -1)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
-        x = self.qsa_nn(x)  # apply QSA-NN
+
+        # QSA-NN
+        x = self.qsa_nn(x)
+
+        # Post-QSA Classical computation
         x = self.output_layer(x)
+        x = sum(x, dim=0)  # Sum the tensors to get (10,1)
+        x = F.softmax(x, dim=0)  # Apply Softmax layer for multiclass probs
+
         return x

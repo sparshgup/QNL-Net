@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 from torch import manual_seed
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
@@ -7,6 +8,8 @@ from torchvision import datasets, transforms
 import torch.optim as optim
 
 from model import create_qsa_nn, HybridCNNQSA
+
+start_time = time.time()  # Start measuring runtime
 
 # -----------------------------------------------------------------------------
 # Model
@@ -69,6 +72,7 @@ for epoch in range(epochs):
 
         optimizer.zero_grad(set_to_none=True)  # Initialize gradient
         output = model(data)  # Forward pass
+        target = target.float()
         loss = loss_func(output, target)  # Calculate loss
         loss.backward()  # Backward pass
         optimizer.step()  # Optimize weights
@@ -77,3 +81,11 @@ for epoch in range(epochs):
     loss_list.append(sum(total_loss) / len(total_loss))
 
     print("Training [{:.0f}%]\tLoss: {:.4f}".format(100.0 * (epoch + 1) / epochs, loss_list[-1]))
+
+
+# Runtime
+end_time = time.time()  # Stop measuring runtime
+runtime = end_time - start_time  # Calculate runtime
+print("----------------------------------------------")
+print("Runtime: {:.2f} seconds", runtime)
+print("----------------------------------------------")
