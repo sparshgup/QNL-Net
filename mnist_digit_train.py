@@ -1,21 +1,33 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import torch
-from torch import cat, no_grad, manual_seed
+from torch import manual_seed
+from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
 
+from model import create_qsa_nn, HybridCNNQSA
 
 # -----------------------------------------------------------------------------
-# Train Dataset
+# Model
+# -----------------------------------------------------------------------------
+
+qsa_nn = create_qsa_nn()
+model = HybridCNNQSA(qsa_nn)
+
+print("----------------------------------------------")
+print("Hybrid CNN-QSA model Instantiated Successfully")
+print("----------------------------------------------")
+
+# -----------------------------------------------------------------------------
+# Dataset (Train)
 # -----------------------------------------------------------------------------
 
 # Set train shuffle seed (for reproducibility)
 manual_seed(42)
 
-batch_size = 1
-n_samples = 100  # We will concentrate on the first 100 samples
+batch_size = 10
+n_samples = 10
 
 # Use pre-defined torchvision function to load MNIST train data
 X_train = datasets.MNIST(
@@ -25,15 +37,43 @@ X_train = datasets.MNIST(
     transform=transforms.Compose([transforms.ToTensor()])
 )
 
-# Filter out labels (originally 0-9), leaving only labels 0 and 1
-idx = np.append(
-    np.where(X_train.targets == 0)[0][:n_samples],
-    np.where(X_train.targets == 1)[0][:n_samples]
-)
-X_train.data = X_train.data[idx]
-X_train.targets = X_train.targets[idx]
-
-# Define torch dataloader with filtered data
+# Define torch dataloader
 train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True)
 
+print("----------------------------------------------")
+print("Training Data Loaded Successfully")
+print("----------------------------------------------")
 
+# -----------------------------------------------------------------------------
+# Training - Model
+# -----------------------------------------------------------------------------
+
+print("----------------------------------------------")
+print("Training Model ...")
+print("----------------------------------------------")
+
+# Define model, optimizer, and loss function
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+loss_func = CrossEntropyLoss()
+
+# Start training
+epochs = 2  # Set number of epochs
+loss_list = []  # Store loss history
+model.train()  # Set model to training mode
+
+for epoch in range(epochs):
+
+    total_loss = []
+
+    for batch_idx, (data, target) in enumerate(train_loader):
+
+        optimizer.zero_grad(set_to_none=True)  # Initialize gradient
+        output = model(data)  # Forward pass
+        loss = loss_func(output, target)  # Calculate loss
+        loss.backward()  # Backward pass
+        optimizer.step()  # Optimize weights
+        total_loss.append(loss.item())  # Store loss
+
+    loss_list.append(sum(total_loss) / len(total_loss))
+
+    print("Training [{:.0f}%]\tLoss: {:.4f}".format(100.0 * (epoch + 1) / epochs, loss_list[-1]))

@@ -41,6 +41,9 @@ class QuantumSelfAttention:
         # Entanglement using CNOT gate - Tensor Product (gaussian and linear)
         self.circuit.cx(2, 3)
 
+        # Entanglement using CNOT gate - (to replicate Element-wise Sum (X and embedding output))
+        self.circuit.cx(3, 0)
+
     def circuit_parameters(self):
         # Set parameters
         self.parameters = {self.x, self.theta, self.phi}
@@ -49,4 +52,3 @@ class QuantumSelfAttention:
 
     def get_circuit(self):
         return self.circuit
-

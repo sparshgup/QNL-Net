@@ -1,3 +1,5 @@
+from qiskit_machine_learning.neural_networks import SamplerQNN
+
 from quantum_self_attention import QuantumSelfAttention
 
 from torch import sum
@@ -12,10 +14,16 @@ from qiskit_machine_learning.connectors import TorchConnector
 
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZZFeatureMap
-from qiskit_machine_learning.neural_networks import EstimatorQNN
+from qiskit_machine_learning.algorithms import VQC
 
 
 num_qubits = 4
+output_shape = 10  # Number of classes
+
+
+# Interpret for SamplerQNN
+def interpretation(x):
+    return f"{x:b}".count("1") % output_shape
 
 
 # Compose Quantum Self Attention Neural Network with Feature Map
@@ -24,19 +32,21 @@ def create_qsa_nn():
     feature_map = ZZFeatureMap(num_qubits)
 
     # Quantum Self Attention circuit
-    qsa = QuantumSelfAttention.get_circuit()
+    qsa = QuantumSelfAttention(num_qubits=num_qubits)
+    qsa_circuit = qsa.get_circuit()
 
     # QSA NN circuit
     qc = QuantumCircuit(num_qubits)
     qc.compose(feature_map, inplace=True)
-    qc.compose(qsa, inplace=True)
+    qc.compose(qsa_circuit, inplace=True)
 
     # REMEMBER TO SET input_gradients=True FOR ENABLING HYBRID GRADIENT BACKPROP
-    qsa_nn = EstimatorQNN(
-        circuit=qsa,
+    qsa_nn = SamplerQNN(
+        circuit=qc,
         input_params=feature_map.parameters,
         weight_params=qsa.circuit_parameters(),
-        input_gradients=True,
+        interpret=interpretation,
+        output_shape=output_shape,
     )
 
     return qsa_nn
@@ -51,10 +61,13 @@ class HybridCNNQSA(Module):
         self.dropout = Dropout2d()
         self.fc1 = Linear(256, 64)
         self.fc2 = Linear(64, 4)  # 4-dimensional input to QSA-NN
+
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].
-        self.qnn = TorchConnector(qsa_nn)
-        self.output_layer = Linear(10, 2)  # 2-dimensional output from QSA-NN
+        self.qsa_nn = TorchConnector(qsa_nn)
+
+        # 1-dimensional output from QSA-NN
+        self.output_layer = Linear(10, 10)
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
@@ -67,5 +80,4 @@ class HybridCNNQSA(Module):
         x = self.fc2(x)
         x = self.qsa_nn(x)  # apply QSA-NN
         x = self.output_layer(x)
-        x = sum(x, dim=0)  # Element-wise sum of the QSA-NN output
         return x

@@ -1,12 +1,12 @@
 # Hybrid Quantum-Classical Self-Attention
 
-Sample Quantum Self-Attention Variational Circuit:
+Quantum Self-Attention Variational Circuit:
 
-![QuantumSelfAttention_Circuit.png](docs%2FQuantumSelfAttention_Circuit.png)
+<img src="docs/QuantumSelfAttention_Circuit.png" alt="Quantum Self-Attention Circuit" width="500"/>
 
 
-### Reference
+### References
 
-Classical Self-Attention Mechanism from paper (Fig. 2): https://arxiv.org/pdf/1711.07971.pdf
+[1] Classical Self-Attention Mechanism from paper (Fig. 2): https://arxiv.org/pdf/1711.07971.pdf
 
-![Reference_ClassicalSelfAttention.png](docs%2FReference_ClassicalSelfAttention.png)
+<img src="docs/Reference_ClassicalSelfAttention.png" alt="Classical Self-Attention Reference" width="400"/>
