@@ -21,13 +21,29 @@ output_shape = 10  # Number of classes
 
 # Interpret for SamplerQNN
 def interpretation(x):
+    """
+    Interpret function for SamplerQNN
+
+    Args:
+        x: QNN output
+
+    Returns:
+        Class label
+    """
     binary_x = f"{x:b}"  # Convert to binary representation
     decimal_x = int(binary_x, 2)  # Convert binary to decimal
     return decimal_x % output_shape
 
 
-# Compose Quantum Self Attention Neural Network with Feature Map
+# Compose Quantum Self-Attention Neural Network with Feature Map
 def create_qsa_nn():
+    """
+    Compose Quantum Self-Attention Neural Network with Feature Map
+    utilizing SamplerQNN.
+
+    Returns:
+        Quantum neural network with self-attention.
+    """
     # Feature Map for Encoding
     feature_map = ZFeatureMap(num_qubits)
 
@@ -54,6 +70,13 @@ def create_qsa_nn():
 
 # Define torch Module for Hybrid CNN-QSA
 class HybridCNNQSA(Module):
+    """
+    HybridCNNQSA is a hybrid quantum-classical convolutional neural network
+    with Quantum Self Attention.
+
+    Args:
+        qsa_nn: Quantum neural network with self-attention.
+    """
     def __init__(self, qsa_nn):
         super().__init__()
         self.conv1 = Conv2d(1, 2, kernel_size=5)
@@ -71,6 +94,15 @@ class HybridCNNQSA(Module):
         # set to (output_shape, batch_size) if batch_size > 1
 
     def forward(self, x):
+        """
+        Forward pass of the HybridCNNQSA.
+
+        Args:
+            x (torch.Tensor): Input tensor.
+
+        Returns:
+            x (torch.Tensor): Output tensor.
+        """
         # CNN
         x = F.relu(self.conv1(x))
         x = F.max_pool2d(x, 2)

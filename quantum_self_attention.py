@@ -4,6 +4,14 @@ from qiskit.circuit import Parameter
 
 class QuantumSelfAttention:
     def __init__(self, num_qubits=4):
+        """
+        QuantumSelfAttention class implements a quantum circuit
+        for self-attention.
+
+        Args:
+             num_qubits: The number of qubit used in the circuit. It is fixed
+                to be 4 qubits for this circuit implementation.
+        """
         self.num_qubits = num_qubits
         self.circuit = QuantumCircuit(num_qubits)
 
@@ -21,6 +29,9 @@ class QuantumSelfAttention:
         self.build_circuit()
 
     def build_circuit(self):
+        """
+        Builds the quantum self-attention circuit
+        """
 
         # X embedding
         self.circuit.ry(self.x_0, 0)
@@ -44,10 +55,19 @@ class QuantumSelfAttention:
         self.circuit.ry(self.x_1, 0)
 
     def circuit_parameters(self):
+        """
+        Sets the parameters to be optimized for the circuit.
+
+        Returns:
+             A set containing all parameters.
+        """
         # Set parameters
         self.parameters = {self.x_0, self.x_1, self.theta, self.phi, self.g}
 
         return self.parameters
 
     def get_circuit(self):
+        """
+        Returns the circuit.
+        """
         return self.circuit
