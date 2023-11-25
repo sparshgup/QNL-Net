@@ -31,7 +31,7 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 100
+n_samples = 10000
 
 # Use pre-defined torchvision function to load MNIST train data
 X_train = datasets.MNIST(
