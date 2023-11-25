@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import time
 import torch
 from torch import manual_seed
-from torch.nn import CrossEntropyLoss
+from torch.nn import NLLLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
@@ -28,7 +28,7 @@ print("----------------------------------------------")
 # -----------------------------------------------------------------------------
 
 # Set train shuffle seed (for reproducibility)
-manual_seed(42)
+manual_seed(239)
 
 batch_size = 1
 n_samples = 100
@@ -58,7 +58,7 @@ print("----------------------------------------------")
 
 # Define model, optimizer, and loss function
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-loss_func = CrossEntropyLoss()
+loss_func = NLLLoss()
 
 # Start training
 num_epochs = 5  # Set number of epochs
