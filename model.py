@@ -120,7 +120,7 @@ class HybridCNNQSA(Module):
         # x = self.output_layer(x)
         # x = sum(x, dim=0)  # Sum the tensors
 
-        # Post-QSA Softmax layer for multiclass probabilities
+        # Post-QSA Softmax layer for multi-class probabilities
         x = F.softmax(x, dim=1)
 
         return x
