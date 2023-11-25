@@ -21,7 +21,9 @@ output_shape = 10  # Number of classes
 
 # Interpret for SamplerQNN
 def interpretation(x):
-    return f"{x:b}".count("1") % output_shape
+    binary_x = f"{x:b}"  # Convert to binary representation
+    decimal_x = int(binary_x, 2)  # Convert binary to decimal
+    return decimal_x % output_shape
 
 
 # Compose Quantum Self Attention Neural Network with Feature Map
@@ -65,7 +67,7 @@ class HybridCNNQSA(Module):
         self.qsa_nn = TorchConnector(qsa_nn)
 
         # output from QSA-NN
-        self.output_layer = Linear(output_shape, 1)
+        # self.output_layer = Linear(output_shape, 1)
         # set to (output_shape, batch_size) if batch_size > 1
 
     def forward(self, x):
@@ -80,13 +82,13 @@ class HybridCNNQSA(Module):
         x = self.fc2(x)
 
         # QSA-NN
-        x = self.qsa_nn(x)
+        x = self.qsa_nn.forward(x)
 
         # # Post-QSA Classical computation (only use if batch_size > 1)
         # x = self.output_layer(x)
         # x = sum(x, dim=0)  # Sum the tensors
 
         # Post-QSA Softmax layer for multiclass probabilities
-        x = F.softmax(x, dim=0)
+        x = F.softmax(x, dim=1)
 
         return x
