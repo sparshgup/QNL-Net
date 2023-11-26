@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import time
 import torch
 from torch import manual_seed
-from torch.nn import NLLLoss
+from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
@@ -31,14 +31,15 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 10000
+n_samples = 60000
 
 # Use pre-defined torchvision function to load MNIST train data
 X_train = datasets.MNIST(
     root="./data",
     train=True,
     download=True,
-    transform=transforms.Compose([transforms.ToTensor()])
+    transform=transforms.Compose([transforms.ToTensor(),
+                                  transforms.Normalize((0.5,), (0.5,))])
 )
 
 # Define torch dataloader
@@ -57,8 +58,8 @@ print("Training Model ...")
 print("----------------------------------------------")
 
 # Define model, optimizer, and loss function
-optimizer = optim.Adam(model.parameters(), lr=0.001)
-loss_func = NLLLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.1)
+loss_func = CrossEntropyLoss()
 
 # Start training
 num_epochs = 5  # Set number of epochs
@@ -73,7 +74,6 @@ for epoch in range(num_epochs):
 
         optimizer.zero_grad(set_to_none=True)  # Initialize gradient
         output = model(data)  # Forward pass
-        # target = target.float() (only use if using sum in model forward pass)
         loss = loss_func(output, target)  # Calculate loss
         loss.backward()  # Backward pass
         optimizer.step()  # Optimize weights

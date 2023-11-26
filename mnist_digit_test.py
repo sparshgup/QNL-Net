@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from torch import manual_seed, no_grad
-from torch.nn import NLLLoss
+from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
@@ -30,7 +30,7 @@ model.load_state_dict(
 manual_seed(239)
 
 batch_size = 1
-n_samples = 100
+n_samples = 10000
 
 # Use pre-defined torchvision function to load MNIST test data
 X_test = datasets.MNIST(
@@ -47,7 +47,7 @@ test_loader = DataLoader(X_test, batch_size=batch_size, shuffle=True)
 # Testing - Model
 # -----------------------------------------------------------------------------
 
-loss_func = NLLLoss()
+loss_func = CrossEntropyLoss()
 
 model.eval()  # set model to evaluation mode
 with no_grad():
@@ -57,6 +57,7 @@ with no_grad():
 
     for batch_idx, (data, target) in enumerate(test_loader):
         output = model(data)
+        print(output)
         if len(output.shape) == 1:
             output = output.reshape(1, *output.shape)
 
