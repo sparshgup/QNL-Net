@@ -28,8 +28,9 @@ The output of this quantum neural network is then mapped to the output classes u
 ### Model (Hybrid CNN-QSA)
 
 The model utilizes a Hybrid Quantum-Classical approach by utilizing classical CNN to extract features 
-and then pass those features to our Quantum Self-Attention module. The output of the Quantum Self-Attention
-module is then fed to a classical softmax layer to extract multi-class probabilities.
+and then pass those features to our Quantum Self-Attention module. 
+
+[TODO - Explain more later based on datasets and results]
 
 ### References
 

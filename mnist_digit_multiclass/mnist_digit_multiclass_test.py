@@ -1,4 +1,4 @@
-from model import create_qsa_nn, HybridCNNQSA
+from mnist_digit_multiclass_model import create_qsa_nn, HybridCNNQSA
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +16,7 @@ qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 # Load desired model
-n_samples = 1000
+n_samples = 60000
 num_epochs = 5
 model.load_state_dict(
     torch.load(f"model/model_{n_samples}samples_{num_epochs}epochs.pt")
@@ -57,7 +57,6 @@ with no_grad():
 
     for batch_idx, (data, target) in enumerate(test_loader):
         output = model(data)
-        print(output)
         if len(output.shape) == 1:
             output = output.reshape(1, *output.shape)
 
@@ -67,8 +66,11 @@ with no_grad():
         loss = loss_func(output, target)
         total_loss.append(loss.item())
 
+    print("----------------------------------------------")
+    print("Performance on Test data")
+    print("----------------------------------------------")
+
     print(
-        "Performance on test data:\n"
         "Loss: {:.4f}\n"
         "Accuracy: {:.1f}%".format(
             sum(total_loss) / len(total_loss),

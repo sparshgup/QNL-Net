@@ -4,11 +4,12 @@ import time
 import torch
 from torch import manual_seed
 from torch.nn import CrossEntropyLoss
+from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
 
-from model import create_qsa_nn, HybridCNNQSA
+from mnist_digit_multiclass_model import create_qsa_nn, HybridCNNQSA
 
 start_time = time.time()  # Start measuring runtime
 
@@ -33,8 +34,8 @@ manual_seed(239)
 batch_size = 1
 n_samples = 60000
 
-# Use pre-defined torchvision function to load MNIST train data
-X_train = datasets.MNIST(
+# Use pre-defined torchvision function to load MNIST data
+X = datasets.MNIST(
     root="./data",
     train=True,
     download=True,
@@ -42,8 +43,12 @@ X_train = datasets.MNIST(
                                   transforms.Normalize((0.5,), (0.5,))])
 )
 
+# Split Train/Validation data
+X_train, X_val = torch.utils.data.random_split(X, [55000, 5000])
+
 # Define torch dataloader
 train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True)
+val_loader = DataLoader(X_val, batch_size=batch_size, shuffle=True)
 
 print("----------------------------------------------")
 print("Training Data Loaded Successfully")
@@ -57,12 +62,16 @@ print("----------------------------------------------")
 print("Training Model ...")
 print("----------------------------------------------")
 
-# Define model, optimizer, and loss function
-optimizer = optim.Adam(model.parameters(), lr=0.1)
+use_cuda = True
+device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
+
+# Define optimizer, scheduler, and loss function
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+scheduler = ExponentialLR(optimizer, gamma=0.9)
 loss_func = CrossEntropyLoss()
 
 # Start training
-num_epochs = 5  # Set number of epochs
+num_epochs = 10  # Set number of epochs
 loss_list = []  # Store loss history
 model.train()  # Set model to training mode
 
@@ -76,14 +85,61 @@ for epoch in range(num_epochs):
         output = model(data)  # Forward pass
         loss = loss_func(output, target)  # Calculate loss
         loss.backward()  # Backward pass
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0) # Gradient Clipping
         optimizer.step()  # Optimize weights
         total_loss.append(loss.item())  # Store loss
 
     loss_list.append(sum(total_loss) / len(total_loss))
 
-    print("Training [{:.0f}%]\tLoss: {:.4f}".format(100.0 * (epoch + 1) /
-                                                    num_epochs, loss_list[-1]))
+    scheduler.step()
 
+    print("Epoch [{}/{}]\tTraining Loss: {:.4f}".format(
+        epoch + 1, num_epochs, loss_list[-1]))
+
+# -----------------------------------------------------------------------------
+# Validation - Model
+# -----------------------------------------------------------------------------
+
+print("----------------------------------------------")
+print("Validation ...")
+print("----------------------------------------------")
+
+model.eval()  # Set model to evaluation mode
+
+correct_train, total_train = 0, 0
+correct_val, total_val = 0, 0
+
+# Validation loop
+with torch.no_grad():
+
+    # Training accuracy
+    for batch_idx, (data, target) in enumerate(train_loader):
+        output = model(data)
+        if len(output.shape) == 1:
+            output = output.reshape(1, *output.shape)
+
+        pred = output.argmax(dim=1, keepdim=True)
+        correct_train += pred.eq(target.view_as(pred)).sum().item()
+
+    training_accuracy = correct_train / total_train
+
+    # Validation accuracy
+    for batch_idx, (data, target) in enumerate(val_loader):
+        output = model(data)
+        if len(output.shape) == 1:
+            output = output.reshape(1, *output.shape)
+
+        pred = output.argmax(dim=1, keepdim=True)
+        correct_train += pred.eq(target.view_as(pred)).sum().item()
+
+    validation_accuracy = correct_val / total_val
+
+    print(f"Training Accuracy: {100 * training_accuracy:.2f}%")
+    print(f"Validation Accuracy: {100 * validation_accuracy:.2f}%")
+
+# -----------------------------------------------------------------------------
+# Save Model and Runtime
+# -----------------------------------------------------------------------------
 
 # Save Model
 torch.save(
