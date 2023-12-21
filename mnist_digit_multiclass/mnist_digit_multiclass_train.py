@@ -35,7 +35,7 @@ batch_size = 1
 n_samples = 60000
 
 # Use pre-defined torchvision function to load MNIST data
-X = datasets.MNIST(
+X_train = datasets.MNIST(
     root="./data",
     train=True,
     download=True,
@@ -43,12 +43,8 @@ X = datasets.MNIST(
                                   transforms.Normalize((0.5,), (0.5,))])
 )
 
-# Split Train/Validation data
-X_train, X_val = torch.utils.data.random_split(X, [55000, 5000])
-
 # Define torch dataloader
 train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True)
-val_loader = DataLoader(X_val, batch_size=batch_size, shuffle=True)
 
 print("----------------------------------------------")
 print("Training Data Loaded Successfully")
@@ -97,17 +93,12 @@ for epoch in range(num_epochs):
         epoch + 1, num_epochs, loss_list[-1]))
 
 # -----------------------------------------------------------------------------
-# Validation - Model
+# Training Accuracy
 # -----------------------------------------------------------------------------
-
-print("----------------------------------------------")
-print("Validation ...")
-print("----------------------------------------------")
 
 model.eval()  # Set model to evaluation mode
 
-correct_train, total_train = 0, 0
-correct_val, total_val = 0, 0
+correct_train, total_train = 0, len(X_train)
 
 # Validation loop
 with torch.no_grad():
@@ -123,19 +114,7 @@ with torch.no_grad():
 
     training_accuracy = correct_train / total_train
 
-    # Validation accuracy
-    for batch_idx, (data, target) in enumerate(val_loader):
-        output = model(data)
-        if len(output.shape) == 1:
-            output = output.reshape(1, *output.shape)
-
-        pred = output.argmax(dim=1, keepdim=True)
-        correct_train += pred.eq(target.view_as(pred)).sum().item()
-
-    validation_accuracy = correct_val / total_val
-
     print(f"Training Accuracy: {100 * training_accuracy:.2f}%")
-    print(f"Validation Accuracy: {100 * validation_accuracy:.2f}%")
 
 # -----------------------------------------------------------------------------
 # Save Model and Runtime
@@ -144,7 +123,7 @@ with torch.no_grad():
 # Save Model
 torch.save(
     model.state_dict(),
-    f"model/model_{n_samples}samples_{num_epochs}epochs.pt"
+    f"model/model_{len(X_train)}samples_{num_epochs}epochs.pt"
 )
 
 print("----------------------------------------------")

@@ -123,7 +123,7 @@ class HybridCNNQSA(Module):
         #x = self.output_layer(x)
         #print(x)
 
-        # Post-QSA Softmax layer for multi-class probabilities
+        # Post-QSA Softmax layer for multi-class
         #x = F.softmax(x, dim=1)
 
 
