@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
 
-from mnist_digit_binaryclass_model import create_qsa_nn, HybridCNNQSA
+from cifar10_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
 start_time = time.time()  # Start measuring runtime
 
@@ -32,25 +32,30 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 60000
+n_samples = 100
 num_epochs = 10  # Set number of epochs for training
 
-# Use pre-defined torchvision function to load MNIST data
-X_train = datasets.MNIST(
+# Use pre-defined torchvision function to load CIFAR10 data
+X_train = datasets.CIFAR10(
     root="./data",
     train=True,
     download=True,
     transform=transforms.Compose([transforms.ToTensor(),
-                                  transforms.Normalize((0.5,), (0.5,))])
+                                  transforms.Normalize((0.5,), (0.5,), (0.5,))])
 )
 
-# Filter out labels (originally 0-9), leaving only labels 0 and 1
+# Filter out labels, leaving only labels "bird" (2) and "cat" (3)
 idx = np.append(
-    np.where(X_train.targets == 0)[0][:n_samples],
-    np.where(X_train.targets == 1)[0][:n_samples]
+    np.where(np.array(X_train.targets) == 2)[0][:n_samples],
+    np.where(np.array(X_train.targets) == 3)[0][:n_samples]
 )
+
 X_train.data = X_train.data[idx]
-X_train.targets = X_train.targets[idx]
+X_train.targets = np.array(X_train.targets)[idx]
+
+# Encode "bird" (2) as 0 and "cat" (3) as 1 in the targets
+X_train.targets[X_train.targets == 2] = 0
+X_train.targets[X_train.targets == 3] = 1
 
 # Define torch dataloader
 train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True)
@@ -73,7 +78,7 @@ use_cuda = True
 device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
 
 # Define optimizer, scheduler, and loss function
-optimizer = optim.Adam(model.parameters(), lr=1e-4)
+optimizer = optim.Adam(model.parameters(), lr=1e-3)
 scheduler = ExponentialLR(optimizer, gamma=0.9)
 loss_func = NLLLoss()
 

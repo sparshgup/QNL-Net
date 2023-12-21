@@ -6,7 +6,7 @@ from torch.nn import BCEWithLogitsLoss, NLLLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from mnist_digit_binaryclass_model import create_qsa_nn, HybridCNNQSA
+from cifar10_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
 # -----------------------------------------------------------------------------
 # Load Model
@@ -16,7 +16,7 @@ qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 # Load desired model
-n_samples = 12665
+n_samples = 10000
 num_epochs = 10
 model.load_state_dict(
     torch.load(f"model/model_{n_samples}samples_{num_epochs}epochs.pt")
@@ -32,19 +32,24 @@ manual_seed(239)
 batch_size = 1
 n_samples = 10000
 
-# Use pre-defined torchvision function to load MNIST test data
-X_test = datasets.MNIST(
+# Use pre-defined torchvision function to load CIFAR10 test data
+X_test = datasets.CIFAR10(
     root="./data", train=False, download=True,
     transform=transforms.Compose([transforms.ToTensor()])
 )
 
-# Filter out labels (originally 0-9), leaving only labels 0 and 1
+# Filter out labels, leaving only labels "bird" (2) and "cat" (3)
 idx = np.append(
-    np.where(X_test.targets == 0)[0][:n_samples],
-    np.where(X_test.targets == 1)[0][:n_samples]
+    np.where(np.array(X_test.targets) == 2)[0][:n_samples],
+    np.where(np.array(X_test.targets) == 3)[0][:n_samples]
 )
+
 X_test.data = X_test.data[idx]
-X_test.targets = X_test.targets[idx]
+X_test.targets = np.array(X_test.targets)[idx]
+
+# Encode "bird" (2) as 0 and "cat" (3) as 1 in the targets
+X_test.targets[X_test.targets == 2] = 0
+X_test.targets[X_test.targets == 3] = 1
 
 # Define torch dataloader with filtered data
 test_loader = DataLoader(X_test, batch_size=batch_size, shuffle=True)
