@@ -6,7 +6,7 @@
 
 <img src="docs/model_circuit.png" alt="Quantum Self-Attention Circuit" width="600"/>
 
-The visual barriers divide the circuit used in the model into 3 respective parts: Encoder, Parametrized Quantum Circuit, Measurement.
+The visual barriers divide the circuit used in the model into 3 respective parts: Encoder, Parametrized Quantum Circuit, and Measurement.
 
 **Encoder:** The classical data is encoded using the [ZFeatureMap](https://qiskit.org/documentation/stubs/qiskit.circuit.library.ZFeatureMap.html).
 
@@ -19,8 +19,9 @@ The visual barriers divide the circuit used in the model into 3 respective parts
 The Quantum Self-Attention Neural Network (QSA-NN) is composed of the [ZFeatureMap](https://qiskit.org/documentation/stubs/qiskit.circuit.library.ZFeatureMap.html) 
 to encode data and the Quantum Self-Attention circuit to perform computation.
 
-Then, a neural network implementation based on the Sampler primitive, [SamplerQNN](https://qiskit.org/ecosystem/machine-learning/stubs/qiskit_machine_learning.neural_networks.SamplerQNN.html#qiskit_machine_learning.neural_networks.SamplerQNN),
-is used to take in our parametrized Quantum Self-Attention circuit with our weight parameters, combined with our feature map and its input parameters.
+Then, a neural network implementation based on the Estimator primitive, [EstimatorQNN](https://qiskit.org/ecosystem/machine-learning/stubs/qiskit_machine_learning.neural_networks.EstimatorQNN.html), for binary-class models or the Sampler primitive, [SamplerQNN](https://qiskit.org/ecosystem/machine-learning/stubs/qiskit_machine_learning.neural_networks.SamplerQNN.html#qiskit_machine_learning.neural_networks.SamplerQNN), 
+for multi-class models, is used to take in our parametrized Quantum Self-Attention circuit with our weight parameters, 
+combined with our feature map and its input parameters.
 
 The output of this quantum neural network is then mapped to the output classes using a custom interpret function.
 
