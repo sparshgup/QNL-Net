@@ -21,7 +21,7 @@ num_qubits = 4
 output_shape = 2  # Number of classes
 
 
-# Interpret for SamplerQNN
+# Interpret for EstimatorQNN
 def parity(x):
     return f"{bin(x)}".count("1") % 2
 
@@ -70,10 +70,10 @@ class HybridCNNQSA(Module):
     def __init__(self, qsa_nn):
         super().__init__()
         self.conv1 = Conv2d(3, 6, kernel_size=5)
-        self.conv2 = Conv2d(6, 16, kernel_size=5)
+        self.conv2 = Conv2d(6, 12, kernel_size=5)
         self.dropout = Dropout2d()
         self.flatten = Flatten()
-        self.fc1 = Linear(400, 128)
+        self.fc1 = Linear(300, 128)
         self.fc2 = Linear(128, num_qubits)  # 4-dimensional input to QSA-NN
 
         # Apply torch connector, weights chosen

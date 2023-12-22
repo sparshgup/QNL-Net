@@ -12,7 +12,6 @@ import torch.nn.functional as F
 from qiskit_machine_learning.connectors import TorchConnector
 
 from qiskit import QuantumCircuit
-from qiskit.circuit.library import ZZFeatureMap
 
 from qiskit_machine_learning.neural_networks import SamplerQNN
 
@@ -38,7 +37,7 @@ def interpretation(x):
 
 
 # Compose Quantum Self-Attention Neural Network with Feature Map
-def create_qsa_nn():
+def create_qsa_nn(feature_map):
     """
     Compose Quantum Self-Attention Neural Network with Feature Map
     utilizing SamplerQNN.
@@ -47,7 +46,7 @@ def create_qsa_nn():
         Quantum neural network with self-attention.
     """
     # Feature Map for Encoding
-    feature_map = ZZFeatureMap(num_qubits)
+    feature_map = feature_map
 
     # Quantum Self Attention circuit
     qsa = QuantumSelfAttention(num_qubits=num_qubits)

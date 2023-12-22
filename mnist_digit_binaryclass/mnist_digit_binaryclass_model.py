@@ -21,7 +21,7 @@ num_qubits = 4
 output_shape = 2  # Number of classes
 
 
-# Interpret for SamplerQNN
+# Interpret for EstimatorQNN
 def parity(x):
     return f"{bin(x)}".count("1") % 2
 

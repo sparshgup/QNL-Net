@@ -15,7 +15,7 @@ from cifar10_binaryclass_model import create_qsa_nn, HybridCNNQSA
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
-feature_map = ZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
+feature_map = ZZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
 qsa_nn = create_qsa_nn(feature_map)
 model = HybridCNNQSA(qsa_nn)
 
@@ -25,8 +25,8 @@ else:
     feature_map_str = "ZFeatureMap"
 
 # Load desired model
-n_samples = 12665
-num_epochs = 10
+n_samples = 10000
+num_epochs = 20
 model.load_state_dict(
     torch.load(f"model/model_{feature_map_str}_{n_samples}samples_{num_epochs}epochs.pt")
 )
@@ -43,22 +43,24 @@ n_samples = 10000
 
 # Use pre-defined torchvision function to load CIFAR10 test data
 X_test = datasets.CIFAR10(
-    root="./data", train=False, download=True,
+    root="./data",
+    train=False,
+    download=True,
     transform=transforms.Compose([transforms.ToTensor()])
 )
 
-# Filter out labels, leaving only labels "bird" (2) and "cat" (3)
+# Filter out labels, leaving only labels 3 (cat) and 5 (dog)
 idx = np.append(
-    np.where(np.array(X_test.targets) == 2)[0][:n_samples],
-    np.where(np.array(X_test.targets) == 3)[0][:n_samples]
+    np.where(np.array(X_test.targets) == 3)[0][:n_samples],
+    np.where(np.array(X_test.targets) == 5)[0][:n_samples]
 )
 
 X_test.data = X_test.data[idx]
 X_test.targets = np.array(X_test.targets)[idx]
 
-# Encode "bird" (2) as 0 and "cat" (3) as 1 in the targets
-X_test.targets[X_test.targets == 2] = 0
-X_test.targets[X_test.targets == 3] = 1
+# Encode 3 (cat) as 0 and 5 (dog) as 1 in the targets
+X_test.targets[X_test.targets == 3] = 0
+X_test.targets[X_test.targets == 5] = 1
 
 # Define torch dataloader with filtered data
 test_loader = DataLoader(X_test, batch_size=batch_size, shuffle=True)

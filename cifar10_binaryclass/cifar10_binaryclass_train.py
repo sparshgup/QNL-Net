@@ -17,10 +17,10 @@ start_time = time.time()  # Start measuring runtime
 
 # -----------------------------------------------------------------------------
 # Model
-# -----------------------------------------------------------------------------
+# ------------------------f-----------------------------------------------------
 
 num_qubits = 4
-feature_map = ZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
+feature_map = ZZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
 qsa_nn = create_qsa_nn(feature_map)
 model = HybridCNNQSA(qsa_nn)
 
@@ -37,8 +37,8 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 60000
-num_epochs = 10  # Set number of epochs for training
+n_samples = 100
+num_epochs = 20  # Set number of epochs for training
 
 # Use pre-defined torchvision function to load CIFAR10 data
 X_train = datasets.CIFAR10(
@@ -49,18 +49,18 @@ X_train = datasets.CIFAR10(
                                   transforms.Normalize((0.5,), (0.5,), (0.5,))])
 )
 
-# Filter out labels, leaving only labels "bird" (2) and "cat" (3)
+# Filter out labels, leaving only labels 3 (cat) and 5 (dog)
 idx = np.append(
-    np.where(np.array(X_train.targets) == 2)[0][:n_samples],
-    np.where(np.array(X_train.targets) == 3)[0][:n_samples]
+    np.where(np.array(X_train.targets) == 3)[0][:n_samples],
+    np.where(np.array(X_train.targets) == 5)[0][:n_samples]
 )
 
 X_train.data = X_train.data[idx]
 X_train.targets = np.array(X_train.targets)[idx]
 
-# Encode "bird" (2) as 0 and "cat" (3) as 1 in the targets
-X_train.targets[X_train.targets == 2] = 0
-X_train.targets[X_train.targets == 3] = 1
+# Encode 3 (cat) as 0 and 5 (dog) as 1 in the targets
+X_train.targets[X_train.targets == 3] = 0
+X_train.targets[X_train.targets == 5] = 1
 
 # Define torch dataloader
 train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True)
@@ -83,7 +83,7 @@ use_cuda = True
 device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
 
 # Define optimizer, scheduler, and loss function
-optimizer = optim.Adam(model.parameters(), lr=1e-3)
+optimizer = optim.Adam(model.parameters(), lr=1e-4)
 scheduler = ExponentialLR(optimizer, gamma=0.9)
 loss_func = NLLLoss()
 

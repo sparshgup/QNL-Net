@@ -43,7 +43,9 @@ n_samples = 10000
 
 # Use pre-defined torchvision function to load MNIST test data
 X_test = datasets.MNIST(
-    root="./data", train=False, download=True,
+    root="./data",
+    train=False,
+    download=True,
     transform=transforms.Compose([transforms.ToTensor()])
 )
 
