@@ -32,7 +32,7 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 100
+n_samples = 200
 num_epochs = 10  # Set number of epochs for training
 
 # Use pre-defined torchvision function to load CIFAR10 data

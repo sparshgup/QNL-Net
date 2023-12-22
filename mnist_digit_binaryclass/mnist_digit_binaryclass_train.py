@@ -9,6 +9,8 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
 
+from qiskit.circuit.library import ZFeatureMap, ZZFeatureMap
+
 from mnist_digit_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
 start_time = time.time()  # Start measuring runtime
@@ -16,8 +18,9 @@ start_time = time.time()  # Start measuring runtime
 # -----------------------------------------------------------------------------
 # Model
 # -----------------------------------------------------------------------------
-
-qsa_nn = create_qsa_nn()
+num_qubits = 4
+feature_map = ZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
+qsa_nn = create_qsa_nn(feature_map)
 model = HybridCNNQSA(qsa_nn)
 
 print("----------------------------------------------")
@@ -32,7 +35,7 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 60000
+n_samples = 10
 num_epochs = 10  # Set number of epochs for training
 
 # Use pre-defined torchvision function to load MNIST data
@@ -129,10 +132,15 @@ with torch.no_grad():
 # Save Model and Runtime
 # -----------------------------------------------------------------------------
 
+if feature_map == ZZFeatureMap:
+    feature_map_str = "ZZFeatureMap"
+else:
+    feature_map_str = "ZFeatureMap"
+
 # Save Model
 torch.save(
     model.state_dict(),
-    f"model/model_{len(X_train)}samples_{num_epochs}epochs.pt"
+    f"model/model_{feature_map_str}_{len(X_train)}samples_{num_epochs}epochs.pt"
 )
 
 print("----------------------------------------------")
