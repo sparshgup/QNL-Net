@@ -20,6 +20,7 @@ start_time = time.time()  # Start measuring runtime
 # -----------------------------------------------------------------------------
 num_qubits = 4
 feature_map = ZZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
+feature_map_str = "ZZFeatureMap"  # to save model (same as feature map)
 qsa_nn = create_qsa_nn(feature_map)
 model = HybridCNNQSA(qsa_nn)
 
@@ -35,7 +36,7 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 60000
+n_samples = 10
 num_epochs = 10  # Set number of epochs for training
 
 # Use pre-defined torchvision function to load MNIST data
@@ -135,11 +136,6 @@ with torch.no_grad():
 # -----------------------------------------------------------------------------
 # Save Model and Runtime
 # -----------------------------------------------------------------------------
-
-if feature_map == ZZFeatureMap:
-    feature_map_str = "ZZFeatureMap"
-else:
-    feature_map_str = "ZFeatureMap"
 
 # Save Model
 torch.save(

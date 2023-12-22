@@ -19,7 +19,8 @@ start_time = time.time()  # Start measuring runtime
 # Model
 # -----------------------------------------------------------------------------
 num_qubits = 4
-feature_map = ZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
+feature_map = ZZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
+feature_map_str = "ZZFeatureMap"  # to save model (same as feature map)
 qsa_nn = create_qsa_nn(feature_map)
 model = HybridCNNQSA(qsa_nn)
 
@@ -131,11 +132,6 @@ with torch.no_grad():
 # -----------------------------------------------------------------------------
 # Save Model and Runtime
 # -----------------------------------------------------------------------------
-
-if feature_map == ZZFeatureMap:
-    feature_map_str = "ZZFeatureMap"
-else:
-    feature_map_str = "ZFeatureMap"
 
 # Save Model
 torch.save(

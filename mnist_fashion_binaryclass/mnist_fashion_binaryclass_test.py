@@ -15,14 +15,11 @@ from mnist_fashion_binaryclass_model import create_qsa_nn, HybridCNNQSA
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
-feature_map = ZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
+feature_map = ZZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
+feature_map_str = "ZZFeatureMap"  # to load model (same as feature map)
 qsa_nn = create_qsa_nn(feature_map)
 model = HybridCNNQSA(qsa_nn)
 
-if feature_map == ZZFeatureMap:
-    feature_map_str = "ZZFeatureMap"
-else:
-    feature_map_str = "ZFeatureMap"
 
 # Load desired model
 n_samples = 12000
