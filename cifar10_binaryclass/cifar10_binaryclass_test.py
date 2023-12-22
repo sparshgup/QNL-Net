@@ -2,9 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torch
 from torch import manual_seed, no_grad
-from torch.nn import BCEWithLogitsLoss, NLLLoss
+from torch.nn import NLLLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+
+from qiskit.circuit.library import ZFeatureMap, ZZFeatureMap
 
 from cifar10_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
@@ -12,14 +14,21 @@ from cifar10_binaryclass_model import create_qsa_nn, HybridCNNQSA
 # Load Model
 # -----------------------------------------------------------------------------
 
-qsa_nn = create_qsa_nn()
+num_qubits = 4
+feature_map = ZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
+qsa_nn = create_qsa_nn(feature_map)
 model = HybridCNNQSA(qsa_nn)
 
+if feature_map == ZZFeatureMap:
+    feature_map_str = "ZZFeatureMap"
+else:
+    feature_map_str = "ZFeatureMap"
+
 # Load desired model
-n_samples = 10000
+n_samples = 12665
 num_epochs = 10
 model.load_state_dict(
-    torch.load(f"model/model_{n_samples}samples_{num_epochs}epochs.pt")
+    torch.load(f"model/model_{feature_map_str}_{n_samples}samples_{num_epochs}epochs.pt")
 )
 
 # -----------------------------------------------------------------------------
