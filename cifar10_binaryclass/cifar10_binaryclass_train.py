@@ -25,7 +25,6 @@ feature_map_str = "ZZFeatureMap"  # to save model (same as feature map)
 qsa_nn = create_qsa_nn(feature_map)
 model = HybridCNNQSA(qsa_nn)
 
-
 print("----------------------------------------------")
 print("Hybrid CNN-QSA model Instantiated Successfully")
 print("----------------------------------------------")
@@ -38,8 +37,8 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 100
-num_epochs = 5  # Set number of epochs for training
+n_samples = 60000
+num_epochs = 10  # Set number of epochs for training
 
 # Use pre-defined torchvision function to load CIFAR10 data
 X_train = datasets.CIFAR10(
