@@ -5,8 +5,6 @@ from torch.nn import NLLLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from qiskit.circuit.library import ZFeatureMap, ZZFeatureMap
-
 from mnist_fashion_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
 # -----------------------------------------------------------------------------
@@ -19,10 +17,13 @@ qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 # Load desired model
-n_samples = 10000
-num_epochs = 40
+n_samples = 12000
+num_epochs = 10
+lr = 1e-6
+op = "adam"
+loss_str = "nll"
 model.load_state_dict(
-    torch.load(f"model/model_{n_samples}samples_{num_epochs}epochs.pt")
+    torch.load(f"model/model_{n_samples}samples_{num_epochs}epochs_{op}_lr{lr}_{loss_str}.pt")
 )
 
 # -----------------------------------------------------------------------------

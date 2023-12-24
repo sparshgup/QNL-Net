@@ -34,7 +34,7 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 10
+n_samples = 12000
 num_epochs = 10  # Set number of epochs for training
 
 # Use pre-defined torchvision function to load MNIST data
@@ -79,7 +79,10 @@ use_cuda = True
 device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
 
 # Define optimizer, scheduler, and loss function
-optimizer = optim.Adam(model.parameters(), lr=1e-4)
+lr = 1e-5
+op = "adam"
+loss_str = "nll"
+optimizer = optim.Adam(model.parameters(), lr=lr)
 scheduler = ExponentialLR(optimizer, gamma=0.9)
 loss_func = NLLLoss()
 
@@ -138,7 +141,7 @@ with torch.no_grad():
 # Save Model
 torch.save(
     model.state_dict(),
-    f"model/model_{len(X_train)}samples_{num_epochs}epochs.pt"
+    f"model/model_{len(X_train)}samples_{num_epochs}epochs_{op}_lr{lr}_{loss_str}.pt"
 )
 
 print("----------------------------------------------")
