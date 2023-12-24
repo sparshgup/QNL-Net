@@ -1,5 +1,5 @@
-from quantum_self_attention import QuantumSelfAttention
-
+import sys
+import os
 import torch
 from torch.nn import (
     Module,
@@ -8,11 +8,17 @@ from torch.nn import (
     Dropout2d,
     Flatten,
 )
+from torch import cat
 import torch.nn.functional as F
 from qiskit_machine_learning.connectors import TorchConnector
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZFeatureMap
-from qiskit_machine_learning.neural_networks import SamplerQNN
+from qiskit_machine_learning.neural_networks import EstimatorQNN
+
+parent_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(parent_dir)
+
+from quantum_self_attention import QuantumSelfAttention
 
 
 num_qubits = 4
