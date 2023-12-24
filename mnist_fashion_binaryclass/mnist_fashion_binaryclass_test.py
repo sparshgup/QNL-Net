@@ -1,8 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import torch
 from torch import manual_seed, no_grad
-from torch.nn import BCEWithLogitsLoss, NLLLoss
+from torch.nn import NLLLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 

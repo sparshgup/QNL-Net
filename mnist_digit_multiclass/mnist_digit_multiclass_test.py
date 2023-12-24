@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import torch
 from torch import manual_seed, no_grad
 from torch.nn import CrossEntropyLoss
