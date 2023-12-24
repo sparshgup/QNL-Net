@@ -1,6 +1,6 @@
-numpy==1.26.2
-qiskit==0.45.0
-qiskit_machine_learning==0.7.0
-qiskit_terra==0.45.0
-torch==2.1.1
-torchvision==0.16.1
+numpy>=1.26.2
+qiskit>=0.45.0
+qiskit_machine_learning>=0.7.0
+qiskit_terra>=0.45.0
+torch>=2.1.1
+torchvision>=0.16.1

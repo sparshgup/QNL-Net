@@ -17,14 +17,14 @@ start_time = time.time()  # Start measuring runtime
 # -----------------------------------------------------------------------------
 # Model
 # -----------------------------------------------------------------------------
+
 num_qubits = 4
-feature_map = ZZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
-feature_map_str = "ZZFeatureMap"  # to save model (same as feature map)
-qsa_nn = create_qsa_nn(feature_map)
+
+qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 print("----------------------------------------------")
-print("Hybrid CNN-QSA model Instantiated Successfully")
+print("Hybrid CNN-Quan-SANN model Instantiated")
 print("----------------------------------------------")
 
 # -----------------------------------------------------------------------------
@@ -135,7 +135,7 @@ with torch.no_grad():
 # Save Model
 torch.save(
     model.state_dict(),
-    f"model/model_{feature_map_str}_{len(X_train)}samples_{num_epochs}epochs.pt"
+    f"model/model_{len(X_train)}samples_{num_epochs}epochs.pt"
 )
 
 print("----------------------------------------------")

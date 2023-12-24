@@ -8,8 +8,6 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
 
-from qiskit.circuit.library import ZFeatureMap, ZZFeatureMap
-
 from cifar10_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
 start_time = time.time()  # Start measuring runtime
@@ -19,13 +17,12 @@ start_time = time.time()  # Start measuring runtime
 # ------------------------f-----------------------------------------------------
 
 num_qubits = 4
-feature_map = ZZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
-feature_map_str = "ZZFeatureMap"  # to save model (same as feature map)
-qsa_nn = create_qsa_nn(feature_map)
+
+qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 print("----------------------------------------------")
-print("Hybrid CNN-QSA model Instantiated Successfully")
+print("Hybrid CNN-Quan-SANN model Instantiated")
 print("----------------------------------------------")
 
 # -----------------------------------------------------------------------------
@@ -37,7 +34,7 @@ manual_seed(239)
 
 batch_size = 1
 n_samples = 60000
-num_epochs = 10  # Set number of epochs for training
+num_epochs = 40  # Set number of epochs for training
 
 # Use pre-defined torchvision function to load CIFAR10 data
 X_train = datasets.CIFAR10(
@@ -141,7 +138,7 @@ with torch.no_grad():
 # Save Model
 torch.save(
     model.state_dict(),
-    f"model/model_{feature_map_str}_{len(X_train)}samples_{num_epochs}epochs.pt"
+    f"model/model_{z_feature_map_str}_{len(X_train)}samples_{num_epochs}epochs.pt"
 )
 
 print("----------------------------------------------")

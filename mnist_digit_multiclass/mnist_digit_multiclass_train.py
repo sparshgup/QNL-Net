@@ -8,8 +8,6 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
 
-from qiskit.circuit.library import ZFeatureMap, ZZFeatureMap
-
 from mnist_digit_multiclass_model import create_qsa_nn, HybridCNNQSA
 
 start_time = time.time()  # Start measuring runtime
@@ -19,12 +17,12 @@ start_time = time.time()  # Start measuring runtime
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
-feature_map = ZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
-qsa_nn = create_qsa_nn(feature_map)
+
+qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 print("----------------------------------------------")
-print("Hybrid CNN-QSA model Instantiated Successfully")
+print("Hybrid CNN-Quan-SANN model Instantiated")
 print("----------------------------------------------")
 
 # -----------------------------------------------------------------------------

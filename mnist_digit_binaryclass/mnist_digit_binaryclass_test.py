@@ -5,8 +5,6 @@ from torch.nn import BCEWithLogitsLoss, NLLLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from qiskit.circuit.library import ZFeatureMap, ZZFeatureMap
-
 from mnist_digit_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
 # -----------------------------------------------------------------------------
@@ -14,16 +12,15 @@ from mnist_digit_binaryclass_model import create_qsa_nn, HybridCNNQSA
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
-feature_map = ZFeatureMap(num_qubits)  # Choose feature map (Z or ZZ)
-feature_map_str = "ZZFeatureMap"  # to load model (same as feature map)
-qsa_nn = create_qsa_nn(feature_map)
+
+qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 # Load desired model
-n_samples = 12665
-num_epochs = 10
+n_samples = 10000
+num_epochs = 40
 model.load_state_dict(
-    torch.load(f"model/model_{feature_map_str}_{n_samples}samples_{num_epochs}epochs.pt")
+    torch.load(f"model/model_{n_samples}samples_{num_epochs}epochs.pt")
 )
 
 # -----------------------------------------------------------------------------
