@@ -46,7 +46,7 @@ X_train = datasets.CIFAR10(
                                   transforms.Normalize((0.5,), (0.5,), (0.5,))])
 )
 
-# Filter out labels, leaving only labels 3 (cat) and 5 (dog)
+# Filter out labels
 idx = np.append(
     np.where(np.array(X_train.targets) == 0)[0][:n_samples],
     np.where(np.array(X_train.targets) == 1)[0][:n_samples]
@@ -55,7 +55,7 @@ idx = np.append(
 X_train.data = X_train.data[idx]
 X_train.targets = np.array(X_train.targets)[idx]
 
-# Encode 3 (cat) as 0 and 5 (dog) as 1 in the targets
+# Encode desired classes as targets
 X_train.targets[X_train.targets == 0] = 0
 X_train.targets[X_train.targets == 1] = 1
 

@@ -47,17 +47,18 @@ X_train = datasets.FashionMNIST(
                                   transforms.Normalize((0.5,), (0.5,))])
 )
 
-# Filter out labels, leaving only labels 5 (sandal) and 7 (sneaker)
+# Filter out labels
 idx = np.append(
-    np.where(X_train.targets == 5)[0][:n_samples],
-    np.where(X_train.targets == 7)[0][:n_samples]
+    np.where(np.array(X_train.targets) == 0)[0][:n_samples],
+    np.where(np.array(X_train.targets) == 1)[0][:n_samples]
 )
-X_train.data = X_train.data[idx]
-X_train.targets = X_train.targets[idx]
 
-# Encode 5 (sandal) as 0 and 7 (sneaker) as 1 in the targets
-X_train.targets[X_train.targets == 5] = 0
-X_train.targets[X_train.targets == 7] = 1
+X_train.data = X_train.data[idx]
+X_train.targets = np.array(X_train.targets)[idx]
+
+# Encode desired classes as targets
+X_train.targets[X_train.targets == 0] = 0
+X_train.targets[X_train.targets == 1] = 1
 
 # Define torch dataloader
 train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True)

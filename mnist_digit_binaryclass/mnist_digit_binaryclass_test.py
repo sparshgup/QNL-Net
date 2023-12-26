@@ -44,13 +44,18 @@ X_test = datasets.MNIST(
     transform=transforms.Compose([transforms.ToTensor()])
 )
 
-# Filter out labels (originally 0-9), leaving only labels 0 and 1
+# Filter out desired labels
 idx = np.append(
-    np.where(X_test.targets == 0)[0][:n_samples],
-    np.where(X_test.targets == 1)[0][:n_samples]
+    np.where(np.array(X_test.targets) == 0)[0][:n_samples],
+    np.where(np.array(X_test.targets) == 1)[0][:n_samples]
 )
+
 X_test.data = X_test.data[idx]
-X_test.targets = X_test.targets[idx]
+X_test.targets = np.array(X_test.targets)[idx]
+
+# Encode desired classes as targets
+X_test.targets[X_test.targets == 0] = 0
+X_test.targets[X_test.targets == 1] = 1
 
 # Define torch dataloader with filtered data
 test_loader = DataLoader(X_test, batch_size=batch_size, shuffle=True)

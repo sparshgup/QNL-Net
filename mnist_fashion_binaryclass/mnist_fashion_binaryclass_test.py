@@ -44,17 +44,18 @@ X_test = datasets.FashionMNIST(
     transform=transforms.Compose([transforms.ToTensor()])
 )
 
-# Filter out labels, leaving only labels 5 (sandal) and 7 (sneaker)
+# Filter out desired labels
 idx = np.append(
-    np.where(X_test.targets == 5)[0][:n_samples],
-    np.where(X_test.targets == 7)[0][:n_samples]
+    np.where(np.array(X_test.targets) == 0)[0][:n_samples],
+    np.where(np.array(X_test.targets) == 1)[0][:n_samples]
 )
-X_test.data = X_test.data[idx]
-X_test.targets = X_test.targets[idx]
 
-# Encode 5 (sandal) as 0 and 7 (sneaker) as 1 in the targets
-X_test.targets[X_test.targets == 5] = 0
-X_test.targets[X_test.targets == 7] = 1
+X_test.data = X_test.data[idx]
+X_test.targets = np.array(X_test.targets)[idx]
+
+# Encode desired classes as targets
+X_test.targets[X_test.targets == 0] = 0
+X_test.targets[X_test.targets == 1] = 1
 
 # Define torch dataloader with filtered data
 test_loader = DataLoader(X_test, batch_size=batch_size, shuffle=True)
