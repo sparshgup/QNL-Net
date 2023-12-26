@@ -35,7 +35,8 @@ manual_seed(239)
 
 batch_size = 1
 n_samples = 12000
-num_epochs = 10  # Set number of epochs for training
+num_epochs = 5  # Set number of epochs for training
+lr = 1.75e-04  # Set learning rate for optimizer
 
 # Use pre-defined torchvision function to load MNIST data
 X_train = datasets.FashionMNIST(
@@ -79,7 +80,6 @@ use_cuda = True
 device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
 
 # Define optimizer, scheduler, and loss function
-lr = 1e-5
 op = "adam"
 loss_str = "nll"
 optimizer = optim.Adam(model.parameters(), lr=lr)
