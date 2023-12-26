@@ -37,6 +37,7 @@ manual_seed(239)
 batch_size = 1
 n_samples = 10
 num_epochs = 10  # Set number of epochs for training
+lr = 1e-4  # Set learning rate for optimizer
 
 # Use pre-defined torchvision function to load MNIST data
 X_train = datasets.MNIST(
@@ -76,7 +77,6 @@ use_cuda = True
 device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
 
 # Define optimizer, scheduler, and loss function
-lr = 1e-4
 op = "adam"
 loss_str = "nll"
 optimizer = optim.Adam(model.parameters(), lr=lr)
