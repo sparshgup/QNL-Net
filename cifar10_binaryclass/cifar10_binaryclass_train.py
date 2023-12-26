@@ -78,6 +78,7 @@ print("----------------------------------------------")
 
 use_cuda = True
 device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
+model.to(device)
 
 # Define optimizer, scheduler, and loss function
 op = "adam"
@@ -95,6 +96,7 @@ for epoch in range(num_epochs):
     total_loss = []
 
     for batch_idx, (data, target) in enumerate(train_loader):
+        data, target = data.to(device), target.to(device)
         optimizer.zero_grad(set_to_none=True)  # Initialize gradient
         output = model(data)  # Forward pass
         loss = loss_func(output, target)  # Calculate loss
