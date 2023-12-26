@@ -61,9 +61,6 @@ print("----------------------------------------------")
 print("Training Model ...")
 print("----------------------------------------------")
 
-use_cuda = True
-device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
-
 # Define optimizer, scheduler, and loss function
 op = "adam"
 loss_str = "ce"
