@@ -34,8 +34,8 @@ manual_seed(239)
 
 batch_size = 1
 n_samples = 60000
-num_epochs = 20  # Set number of epochs for training
-lr = 1.5e-4  # Set learning rate for optimizer
+num_epochs = 10  # Set number of epochs for training
+lr = 1e-4  # Set learning rate for optimizer
 
 # Use pre-defined torchvision function to load CIFAR10 data
 X_train = datasets.CIFAR10(
@@ -48,16 +48,16 @@ X_train = datasets.CIFAR10(
 
 # Filter out labels, leaving only labels 3 (cat) and 5 (dog)
 idx = np.append(
-    np.where(np.array(X_train.targets) == 3)[0][:n_samples],
-    np.where(np.array(X_train.targets) == 5)[0][:n_samples]
+    np.where(np.array(X_train.targets) == 0)[0][:n_samples],
+    np.where(np.array(X_train.targets) == 1)[0][:n_samples]
 )
 
 X_train.data = X_train.data[idx]
 X_train.targets = np.array(X_train.targets)[idx]
 
 # Encode 3 (cat) as 0 and 5 (dog) as 1 in the targets
-X_train.targets[X_train.targets == 3] = 0
-X_train.targets[X_train.targets == 5] = 1
+X_train.targets[X_train.targets == 0] = 0
+X_train.targets[X_train.targets == 1] = 1
 
 # Define torch dataloader
 train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True)
@@ -76,9 +76,15 @@ print("----------------------------------------------")
 print("Training Model ...")
 print("----------------------------------------------")
 
-use_cuda = True
-device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
-model.to(device)
+#use_cuda = True
+#print("cuda available:", torch.cuda.is_available())
+#device = torch.device("cuda" if (use_cuda and torch.cuda.is_available()) else "cpu")
+#model = model.to(device)
+
+use_mps = True
+print("apple mps available:", torch.backends.mps.is_available())
+device = torch.device("mps" if (use_mps and torch.backends.mps.is_available()) else "cpu")
+model = model.to(device)
 
 # Define optimizer, scheduler, and loss function
 op = "adam"
@@ -99,7 +105,9 @@ for epoch in range(num_epochs):
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad(set_to_none=True)  # Initialize gradient
         output = model(data)  # Forward pass
+        output = output.to(device)
         loss = loss_func(output, target)  # Calculate loss
+        loss = loss.to(device)
         loss.backward()  # Backward pass
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)  # Gradient Clipping
         optimizer.step()  # Optimize weights

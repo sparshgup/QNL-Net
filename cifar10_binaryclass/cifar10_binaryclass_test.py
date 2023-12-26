@@ -19,7 +19,7 @@ model = HybridCNNQSA(qsa_nn)
 # Load desired model
 n_samples = 10000
 num_epochs = 20
-lr = 1.5e-4
+lr = 2.5e-4
 op = "adam"
 loss_str = "nll"
 model.load_state_dict(
