@@ -34,8 +34,8 @@ manual_seed(239)
 
 batch_size = 1
 n_samples = 60000
-num_epochs = 30  # Set number of epochs for training
-lr = 2e-4  # Set learning rate for optimizer
+num_epochs = 20  # Set number of epochs for training
+lr = 1.5e-4  # Set learning rate for optimizer
 
 # Use pre-defined torchvision function to load CIFAR10 data
 X_train = datasets.CIFAR10(
