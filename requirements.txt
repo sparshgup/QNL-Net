@@ -4,3 +4,4 @@ qiskit_machine_learning>=0.7.0
 qiskit_terra>=0.45.0
 torch>=2.1.1
 torchvision>=0.16.1
+torchsummary~=1.5.1

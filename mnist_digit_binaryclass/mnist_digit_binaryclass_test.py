@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 from torch import manual_seed, no_grad
-from torch.nn import BCEWithLogitsLoss, NLLLoss
+from torch.nn import NLLLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
@@ -17,8 +17,8 @@ qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 # Load desired model
-n_samples = 12000
-num_epochs = 5
+n_samples = 11881
+num_epochs = 7
 lr = 1e-4
 op = "adam"
 loss_str = "nll"
@@ -47,7 +47,7 @@ X_test = datasets.MNIST(
 # Filter out desired labels
 idx = np.append(
     np.where(np.array(X_test.targets) == 0)[0][:n_samples],
-    np.where(np.array(X_test.targets) == 1)[0][:n_samples]
+    np.where(np.array(X_test.targets) == 2)[0][:n_samples]
 )
 
 X_test.data = X_test.data[idx]
@@ -55,7 +55,7 @@ X_test.targets = np.array(X_test.targets)[idx]
 
 # Encode desired classes as targets
 X_test.targets[X_test.targets == 0] = 0
-X_test.targets[X_test.targets == 1] = 1
+X_test.targets[X_test.targets == 2] = 1
 
 # Define torch dataloader with filtered data
 test_loader = DataLoader(X_test, batch_size=batch_size, shuffle=True)

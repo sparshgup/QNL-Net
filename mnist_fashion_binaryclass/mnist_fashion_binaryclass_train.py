@@ -7,6 +7,7 @@ from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
+from torchsummary import summary
 
 from mnist_fashion_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
@@ -22,10 +23,12 @@ num_qubits = 4
 qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
-print("----------------------------------------------")
+print("================================================================")
 print("Hybrid CNN-Quan-SANN model Instantiated")
-print("----------------------------------------------")
-
+print("================================================================")
+print("Model Architecture")
+summary(model, input_size=(1, 28, 28))
+print("================================================================")
 # -----------------------------------------------------------------------------
 # Dataset (Train)
 # -----------------------------------------------------------------------------

@@ -7,8 +7,7 @@ from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
-
-from qiskit.circuit.library import ZFeatureMap, ZZFeatureMap
+from torchsummary import summary
 
 from mnist_digit_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
@@ -23,10 +22,12 @@ num_qubits = 4
 qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
-print("----------------------------------------------")
+print("================================================================")
 print("Hybrid CNN-Quan-SANN model Instantiated")
-print("----------------------------------------------")
-
+print("================================================================")
+print("Model Architecture")
+summary(model, input_size=(1, 28, 28))
+print("================================================================")
 # -----------------------------------------------------------------------------
 # Dataset (Train)
 # -----------------------------------------------------------------------------
@@ -35,8 +36,8 @@ print("----------------------------------------------")
 manual_seed(239)
 
 batch_size = 1
-n_samples = 10
-num_epochs = 10  # Set number of epochs for training
+n_samples = 60000
+num_epochs = 7  # Set number of epochs for training
 lr = 1e-4  # Set learning rate for optimizer
 
 # Use pre-defined torchvision function to load MNIST data
@@ -62,7 +63,8 @@ X_train.targets[X_train.targets == 0] = 0
 X_train.targets[X_train.targets == 1] = 1
 
 # Define torch dataloader
-train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True)
+train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True,
+                          pin_memory=True)
 
 print(X_train)
 

@@ -13,7 +13,7 @@ import torch.nn.functional as F
 from qiskit_machine_learning.connectors import TorchConnector
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZFeatureMap
-from qiskit_machine_learning.neural_networks import EstimatorQNN
+from qiskit_machine_learning.neural_networks import SamplerQNN
 
 parent_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(parent_dir)
@@ -86,11 +86,10 @@ class HybridCNNQSA(Module):
     def __init__(self, qsa_nn):
         super().__init__()
         self.conv1 = Conv2d(1, 4, kernel_size=3)
-        self.conv2 = Conv2d(2, 4, kernel_size=3)
+        self.conv2 = Conv2d(4, 16, kernel_size=3)
         self.dropout = Dropout2d()
-        #self.batch_norm = BatchNorm2d(676)
         self.flatten = Flatten()
-        self.fc1 = Linear(676, 128)
+        self.fc1 = Linear(400, 128)
         self.fc2 = Linear(128, num_qubits)  # 4-dimensional input to QSA-NN
 
         # Apply torch connector, weights chosen
@@ -113,9 +112,9 @@ class HybridCNNQSA(Module):
         # CNN
         x = F.relu(self.conv1(x))
         x = F.max_pool2d(x, 2)
-        #x = F.relu(self.conv2(x))
-        #x = F.max_pool2d(x, 2)
-        #x = self.dropout(x)
+        x = F.relu(self.conv2(x))
+        x = F.max_pool2d(x, 2)
+        x = self.dropout(x)
         x = self.flatten(x)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
@@ -124,11 +123,9 @@ class HybridCNNQSA(Module):
         x = self.qsa_nn.forward(x)
 
         # Post-QSA Classical Linear layer
-        #x = self.output_layer(x)
-        #print(x)
+        x = self.output_layer(x)
 
         # Post-QSA Softmax layer for multi-class
-        #x = F.softmax(x, dim=1)
-
+        x = F.softmax(x, dim=1)
 
         return x

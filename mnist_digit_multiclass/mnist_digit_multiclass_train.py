@@ -2,11 +2,12 @@ import numpy as np
 import time
 import torch
 from torch import manual_seed
-from torch.nn import CrossEntropyLoss
+from torch.nn import NLLLoss
 from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import torch.optim as optim
+from torchsummary import summary
 
 from mnist_digit_multiclass_model import create_qsa_nn, HybridCNNQSA
 
@@ -21,10 +22,12 @@ num_qubits = 4
 qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
-print("----------------------------------------------")
+print("================================================================")
 print("Hybrid CNN-Quan-SANN model Instantiated")
-print("----------------------------------------------")
-
+print("================================================================")
+print("Model Architecture")
+summary(model, input_size=(1, 28, 28))
+print("================================================================")
 # -----------------------------------------------------------------------------
 # Dataset (Train)
 # -----------------------------------------------------------------------------
@@ -63,10 +66,10 @@ print("----------------------------------------------")
 
 # Define optimizer, scheduler, and loss function
 op = "adam"
-loss_str = "ce"
+loss_str = "nll"
 optimizer = optim.Adam(model.parameters(), lr=lr)
 scheduler = ExponentialLR(optimizer, gamma=0.9)
-loss_func = CrossEntropyLoss()
+loss_func = NLLLoss()
 
 # Start training
 loss_list = []  # Store loss history
