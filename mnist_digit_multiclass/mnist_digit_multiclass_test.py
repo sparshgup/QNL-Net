@@ -16,8 +16,8 @@ qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 # Load desired model
-n_samples = 12000
-num_epochs = 5
+n_samples = 60000
+num_epochs = 10
 lr = 1e-4
 op = "adam"
 loss_str = "nll"

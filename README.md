@@ -36,9 +36,3 @@ The output of this quantum neural network is then mapped to the output classes u
 
 The model utilizes a Hybrid Quantum-Classical approach by utilizing classical CNN to extract features 
 and then pass those features to our Quantum Self-Attention module. 
-
-### References
-
-[1] Classical Self-Attention Mechanism from (Fig. 2) of paper: https://arxiv.org/pdf/1711.07971.pdf
-
-<img src="docs/Reference_ClassicalSelfAttention.png" alt="Classical Self-Attention Reference" width="400"/>

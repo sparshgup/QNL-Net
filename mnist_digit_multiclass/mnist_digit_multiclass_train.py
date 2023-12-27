@@ -52,6 +52,8 @@ X_train = datasets.MNIST(
 # Define torch dataloader
 train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True)
 
+print(X_train)
+
 print("----------------------------------------------")
 print("Training Data Loaded Successfully")
 print("----------------------------------------------")
@@ -118,7 +120,9 @@ with torch.no_grad():
 
     training_accuracy = correct_train / total_train
 
+    print("----------------------------------------------")
     print(f"Training Accuracy: {100 * training_accuracy:.2f}%")
+    print("----------------------------------------------")
 
 # -----------------------------------------------------------------------------
 # Save Model and Runtime

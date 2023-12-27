@@ -39,7 +39,7 @@ manual_seed(239)
 batch_size = 1
 n_samples = 12000
 num_epochs = 5  # Set number of epochs for training
-lr = 1.75e-04  # Set learning rate for optimizer
+lr = 2e-04  # Set learning rate for optimizer
 
 # Use pre-defined torchvision function to load MNIST data
 X_train = datasets.FashionMNIST(
