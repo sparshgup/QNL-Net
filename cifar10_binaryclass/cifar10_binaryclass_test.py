@@ -5,7 +5,7 @@ from torch.nn import NLLLoss
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from mnist_fashion_binaryclass_model import create_qsa_nn, HybridCNNQSA
+from cifar10_binaryclass_model import create_qsa_nn, HybridCNNQSA
 
 # -----------------------------------------------------------------------------
 # Load Model
@@ -17,9 +17,9 @@ qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 # Load desired model
-n_samples = 12000
-num_epochs = 5
-lr = 2e-04
+n_samples = 10000
+num_epochs = 20
+lr = 2.5e-4
 op = "adam"
 loss_str = "nll"
 model.load_state_dict(
@@ -36,8 +36,8 @@ manual_seed(239)
 batch_size = 1
 n_samples = 10000
 
-# Use pre-defined torchvision function to load MNIST test data
-X_test = datasets.FashionMNIST(
+# Use pre-defined torchvision function to load CIFAR10 test data
+X_test = datasets.CIFAR10(
     root="./data",
     train=False,
     download=True,
