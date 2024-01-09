@@ -18,8 +18,8 @@ model = HybridCNNQSA(qsa_nn)
 
 # Load desired model
 n_samples = 12000
-num_epochs = 5
-lr = 2e-04
+num_epochs = 10
+lr = 1e-04
 op = "adam"
 loss_str = "nll"
 model.load_state_dict(
@@ -47,7 +47,7 @@ X_test = datasets.FashionMNIST(
 # Filter out desired labels
 idx = np.append(
     np.where(np.array(X_test.targets) == 0)[0][:n_samples],
-    np.where(np.array(X_test.targets) == 1)[0][:n_samples]
+    np.where(np.array(X_test.targets) == 5)[0][:n_samples]
 )
 
 X_test.data = X_test.data[idx]
@@ -55,7 +55,7 @@ X_test.targets = np.array(X_test.targets)[idx]
 
 # Encode desired classes as targets
 X_test.targets[X_test.targets == 0] = 0
-X_test.targets[X_test.targets == 1] = 1
+X_test.targets[X_test.targets == 5] = 1
 
 # Define torch dataloader with filtered data
 test_loader = DataLoader(X_test, batch_size=batch_size, shuffle=True)

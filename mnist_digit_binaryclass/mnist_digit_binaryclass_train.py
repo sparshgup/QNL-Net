@@ -37,7 +37,7 @@ manual_seed(239)
 
 batch_size = 1
 n_samples = 60000
-num_epochs = 7  # Set number of epochs for training
+num_epochs = 8  # Set number of epochs for training
 lr = 1e-4  # Set learning rate for optimizer
 
 # Use pre-defined torchvision function to load MNIST data
@@ -51,16 +51,16 @@ X_train = datasets.MNIST(
 
 # Filter out labels
 idx = np.append(
-    np.where(np.array(X_train.targets) == 0)[0][:n_samples],
-    np.where(np.array(X_train.targets) == 1)[0][:n_samples]
+    np.where(np.array(X_train.targets) == 6)[0][:n_samples],
+    np.where(np.array(X_train.targets) == 9)[0][:n_samples]
 )
 
 X_train.data = X_train.data[idx]
 X_train.targets = np.array(X_train.targets)[idx]
 
 # Encode desired classes as targets
-X_train.targets[X_train.targets == 0] = 0
-X_train.targets[X_train.targets == 1] = 1
+X_train.targets[X_train.targets == 6] = 0
+X_train.targets[X_train.targets == 9] = 1
 
 # Define torch dataloader
 train_loader = DataLoader(X_train, batch_size=batch_size, shuffle=True,

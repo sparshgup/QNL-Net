@@ -4,7 +4,7 @@
 
 (Designed using Qiskit)
 
-<img src="docs/model_circuit_zfeaturemap.png" alt="Quantum Self-Attention Circuit" width="800"/>
+<img src="docs/model_circuit.png" alt="Quantum Self-Attention Circuit" width="800"/>
 
 The visual barriers divide the circuit used in the model into 3 respective parts: 
 Encoder, Parametrized Quantum Circuit, and Measurement.

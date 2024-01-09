@@ -18,8 +18,8 @@ model = HybridCNNQSA(qsa_nn)
 
 # Load desired model
 n_samples = 10000
-num_epochs = 20
-lr = 2.5e-4
+num_epochs = 15
+lr = 1.5e-4
 op = "adam"
 loss_str = "nll"
 model.load_state_dict(
@@ -47,7 +47,7 @@ X_test = datasets.CIFAR10(
 # Filter out desired labels
 idx = np.append(
     np.where(np.array(X_test.targets) == 0)[0][:n_samples],
-    np.where(np.array(X_test.targets) == 1)[0][:n_samples]
+    np.where(np.array(X_test.targets) == 2)[0][:n_samples]
 )
 
 X_test.data = X_test.data[idx]
@@ -55,7 +55,7 @@ X_test.targets = np.array(X_test.targets)[idx]
 
 # Encode desired classes as targets
 X_test.targets[X_test.targets == 0] = 0
-X_test.targets[X_test.targets == 1] = 1
+X_test.targets[X_test.targets == 2] = 1
 
 # Define torch dataloader with filtered data
 test_loader = DataLoader(X_test, batch_size=batch_size, shuffle=True)

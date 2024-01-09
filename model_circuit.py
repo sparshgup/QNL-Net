@@ -98,4 +98,4 @@ style = {'backgroundcolor': 'white',
              ],
          }
          }
-circuit.draw(output='mpl', style=style, filename="./docs/model_circuit_zfeaturemap.png")
+circuit.draw(output='mpl', style=style, filename="./docs/model_circuit.png ")
