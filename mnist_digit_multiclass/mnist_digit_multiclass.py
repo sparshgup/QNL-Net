@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchsummary import summary
 
-from cifar10_binaryclass_model import create_qsa_nn, HybridCNNQSA
+from mnist_digit_multiclass_model import create_qsa_nn, HybridCNNQSA
 
 # -----------------------------------------------------------------------------
 # Model
@@ -19,10 +19,10 @@ qsa_nn = create_qsa_nn()
 model = HybridCNNQSA(qsa_nn)
 
 print("================================================================")
-print("Hybrid CNN-Quan-SANN")
+print("Hybrid CNN-Quan-SANN model Instantiated")
 print("================================================================")
 print("Model Architecture")
-summary(model, input_size=(3, 32, 32))
+summary(model, input_size=(1, 28, 28))
 print("================================================================")
 
 # -----------------------------------------------------------------------------
@@ -33,44 +33,42 @@ print("================================================================")
 manual_seed(239)
 
 batch_size = 1
-n_train_samples = 50000
-n_test_samples = 10000
-num_epochs = 25
-lr = 2e-4
+n_train_samples = 60000
+n_test_samples = 20000
+num_epochs = 15
+lr = 2e-5
 
 # Use pre-defined torchvision function to load MNIST data
-train_dataset = datasets.CIFAR10(
+train_dataset = datasets.MNIST(
     root="./data",
     train=True,
     download=True,
     transform=transforms.Compose([transforms.ToTensor(),
-                                  transforms.Normalize(
-                                      (0.4915, 0.4823, .4468),
-                                      (0.2470, 0.2435, 0.2616)
-                                  )])
+                                  transforms.Normalize((0.1307,), (0.3081,))])
 )
 
-test_dataset = datasets.CIFAR10(
+test_dataset = datasets.MNIST(
     root="./data",
     train=False,
     download=True,
     transform=transforms.Compose([transforms.ToTensor(),
-                                  transforms.Normalize(
-                                      (0.4915, 0.4823, .4468),
-                                      (0.2470, 0.2435, 0.2616)
-                                  )])
+                                  transforms.Normalize((0.1307,), (0.3081,))])
 )
 
 # Filter out labels
-train_idx = np.append(
+train_idx = np.concatenate((
     np.where(np.array(train_dataset.targets) == 0)[0][:n_train_samples],
-    np.where(np.array(train_dataset.targets) == 2)[0][:n_train_samples]
-)
+    np.where(np.array(train_dataset.targets) == 1)[0][:n_train_samples],
+    np.where(np.array(train_dataset.targets) == 2)[0][:n_train_samples],
+    np.where(np.array(train_dataset.targets) == 3)[0][:n_train_samples]
+))
 
-test_idx = np.append(
+test_idx = np.concatenate((
     np.where(np.array(test_dataset.targets) == 0)[0][:n_test_samples],
-    np.where(np.array(test_dataset.targets) == 2)[0][:n_test_samples]
-)
+    np.where(np.array(test_dataset.targets) == 1)[0][:n_test_samples],
+    np.where(np.array(test_dataset.targets) == 2)[0][:n_train_samples],
+    np.where(np.array(test_dataset.targets) == 3)[0][:n_train_samples]
+))
 
 train_dataset.data = train_dataset.data[train_idx]
 train_dataset.targets = np.array(train_dataset.targets)[train_idx]
@@ -80,10 +78,14 @@ test_dataset.targets = np.array(test_dataset.targets)[test_idx]
 
 # Encode desired classes as targets
 train_dataset.targets[train_dataset.targets == 0] = 0
-train_dataset.targets[train_dataset.targets == 2] = 1
+train_dataset.targets[train_dataset.targets == 1] = 1
+train_dataset.targets[train_dataset.targets == 2] = 2
+train_dataset.targets[train_dataset.targets == 3] = 3
 
 test_dataset.targets[test_dataset.targets == 0] = 0
-test_dataset.targets[test_dataset.targets == 2] = 1
+test_dataset.targets[test_dataset.targets == 1] = 1
+test_dataset.targets[test_dataset.targets == 2] = 2
+test_dataset.targets[test_dataset.targets == 3] = 3
 
 # Define torch dataloaders
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)

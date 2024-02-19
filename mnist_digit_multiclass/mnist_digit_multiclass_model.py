@@ -20,25 +20,13 @@ sys.path.append(parent_dir)
 
 from quantum_self_attention import QuantumSelfAttention
 
-
 num_qubits = 4
-output_shape = 10  # Number of classes
+output_shape = 4  # Number of classes
 
 
 # Interpret for SamplerQNN
 def interpretation(x):
-    """
-    Interpret function for SamplerQNN
-
-    Args:
-        x: QNN output
-
-    Returns:
-        Class label
-    """
-    binary_x = f"{x:b}"  # Convert to binary representation
-    decimal_x = int(binary_x, 2)  # Convert binary to decimal
-    return decimal_x % output_shape
+    return f"{bin(x)}".count("1") % output_shape
 
 
 # Compose Quantum Self-Attention Neural Network with Feature Map
@@ -83,13 +71,14 @@ class HybridCNNQSA(Module):
     Args:
         qsa_nn: Quantum neural network with self-attention.
     """
+
     def __init__(self, qsa_nn):
         super().__init__()
-        self.conv1 = Conv2d(1, 4, kernel_size=3)
-        self.conv2 = Conv2d(4, 16, kernel_size=3)
+        self.conv1 = Conv2d(1, 2, kernel_size=5)
+        self.conv2 = Conv2d(2, 16, kernel_size=5)
         self.dropout = Dropout2d()
         self.flatten = Flatten()
-        self.fc1 = Linear(400, 128)
+        self.fc1 = Linear(256, 128)
         self.fc2 = Linear(128, num_qubits)  # 4-dimensional input to QSA-NN
 
         # Apply torch connector, weights chosen
@@ -124,8 +113,5 @@ class HybridCNNQSA(Module):
 
         # Post-QSA Classical Linear layer
         x = self.output_layer(x)
-
-        # Post-QSA Softmax layer for multi-class
-        x = F.softmax(x, dim=1)
 
         return x

@@ -14,6 +14,7 @@ from qiskit_machine_learning.connectors import TorchConnector
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZFeatureMap
 from qiskit_machine_learning.neural_networks import EstimatorQNN
+from qiskit.quantum_info import SparsePauliOp, Pauli
 
 parent_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(parent_dir)
@@ -50,9 +51,14 @@ def create_qsa_nn():
     qc.compose(feature_map, inplace=True)
     qc.compose(qsa_circuit, inplace=True)
 
+    # EstimatorQNN Observable
+    pauli_z_qubit0 = Pauli('Z' + 'I' * (num_qubits - 1))
+    observable = SparsePauliOp(pauli_z_qubit0)
+
     # REMEMBER TO SET input_gradients=True FOR ENABLING HYBRID GRADIENT BACKPROP
     qsa_nn = EstimatorQNN(
         circuit=qc,
+        observables=observable,
         input_params=feature_map.parameters,
         weight_params=qsa.circuit_parameters(),
         input_gradients=True,
