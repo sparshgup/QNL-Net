@@ -8,7 +8,6 @@ from torch.nn import (
     Dropout2d,
     Flatten,
 )
-from torch import cat
 import torch.nn.functional as F
 from qiskit_machine_learning.connectors import TorchConnector
 from qiskit import QuantumCircuit
@@ -26,7 +25,14 @@ output_shape = 4  # Number of classes
 
 # Interpret for SamplerQNN
 def interpretation(x):
-    return f"{bin(x)}".count("1") % output_shape
+    if x % output_shape == 0:
+        return 0
+    if x % output_shape == 1:
+        return 1
+    if x % output_shape == 2:
+        return 2
+    else:
+        return 3
 
 
 # Compose Quantum Self-Attention Neural Network with Feature Map
@@ -79,7 +85,7 @@ class HybridCNNQSA(Module):
         self.dropout = Dropout2d()
         self.flatten = Flatten()
         self.fc1 = Linear(256, 128)
-        self.fc2 = Linear(128, num_qubits)  # 4-dimensional input to QSA-NN
+        self.fc2 = Linear(128, num_qubits)  # 4 inputs to Quan-SANN
 
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].

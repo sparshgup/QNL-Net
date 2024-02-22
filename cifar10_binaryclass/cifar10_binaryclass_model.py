@@ -83,7 +83,7 @@ class HybridCNNQSA(Module):
         self.dropout = Dropout2d()
         self.flatten = Flatten()
         self.fc1 = Linear(300, 128)
-        self.fc2 = Linear(128, num_qubits)  # 4-dimensional input to QSA-NN
+        self.fc2 = Linear(128, num_qubits)  # 4 inputs to Quan-SANN
 
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].

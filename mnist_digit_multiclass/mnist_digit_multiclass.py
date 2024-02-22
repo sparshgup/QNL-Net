@@ -36,7 +36,7 @@ batch_size = 1
 n_train_samples = 60000
 n_test_samples = 20000
 num_epochs = 15
-lr = 2e-5
+lr = 1e-4
 
 # Use pre-defined torchvision function to load MNIST data
 train_dataset = datasets.MNIST(
