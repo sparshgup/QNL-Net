@@ -1,39 +1,37 @@
 import sys
 import os
 import torch
-from torch import cat
 from torch.nn import (
     Module,
-    Conv2d,
     Linear,
-    Dropout2d,
-    Flatten,
 )
-import torch.nn.functional as F
+from torch import cat
 from qiskit_machine_learning.connectors import TorchConnector
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZFeatureMap
-from qiskit_machine_learning.neural_networks import SamplerQNN
+from qiskit_machine_learning.neural_networks import EstimatorQNN
+from qiskit.quantum_info import SparsePauliOp, Pauli
 
 parent_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(parent_dir)
 
 from quantum_self_attention import QuantumSelfAttention
 
+
 num_qubits = 4
-output_shape = 4  # Number of classes
+output_shape = 2  # Number of classes
 
 
-# Interpret for SamplerQNN
-#def interpretation(x):
- #   return f"{bin(x)}".count("1") % output_shape
+# Interpret for EstimatorQNN
+def parity(x):
+    return f"{bin(x)}".count("1") % 2
 
 
 # Compose Quantum Self-Attention Neural Network with Feature Map
 def create_qsa_nn():
     """
     Compose Quantum Self-Attention Neural Network with Feature Map
-    utilizing SamplerQNN.
+    utilizing EstimatorQNN.
 
     Returns:
         Quantum neural network with self-attention.
@@ -50,43 +48,42 @@ def create_qsa_nn():
     qc.compose(feature_map, inplace=True)
     qc.compose(qsa_circuit, inplace=True)
 
+    # EstimatorQNN Observable
+    pauli_z_qubit0 = Pauli('Z' + 'I' * (num_qubits - 1))
+    observable = SparsePauliOp(pauli_z_qubit0)
+
     # REMEMBER TO SET input_gradients=True FOR ENABLING HYBRID GRADIENT BACKPROP
-    qsa_nn = SamplerQNN(
+    qsa_nn = EstimatorQNN(
         circuit=qc,
+        observables=observable,
         input_params=feature_map.parameters,
         weight_params=qsa.circuit_parameters(),
-        #interpret=interpretation,
-        output_shape=output_shape,
+        input_gradients=True,
     )
 
     return qsa_nn
 
 
-# Define torch Module for Hybrid CNN-QSA
-class HybridCNNQSA(Module):
+# Define torch Module for Hybrid QSA
+class HybridClassicalQSA(Module):
     """
-    HybridCNNQSA is a hybrid quantum-classical convolutional neural network
+    HybridCNNQSA is a hybrid quantum-classical PCA
     with Quantum Self Attention.
 
     Args:
         qsa_nn: Quantum neural network with self-attention.
     """
-
     def __init__(self, qsa_nn):
         super().__init__()
-        self.conv1 = Conv2d(1, 2, kernel_size=5)
-        self.conv2 = Conv2d(2, 16, kernel_size=5)
-        self.dropout = Dropout2d()
-        self.flatten = Flatten()
-        self.fc1 = Linear(256, 128)
-        self.fc2 = Linear(128, num_qubits)  # 4 inputs to Quan-SANN
+
+        self.fc2 = Linear(4, num_qubits)  # 4 inputs to Quan-SANN
 
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].
         self.qsa_nn = TorchConnector(qsa_nn)
 
         # output from QSA-NN
-        self.output_layer = Linear(16, output_shape)
+        self.output_layer = Linear(1, 1)
 
     def forward(self, x):
         """
@@ -98,14 +95,6 @@ class HybridCNNQSA(Module):
         Returns:
             x (torch.Tensor): Output tensor.
         """
-        # CNN
-        x = F.relu(self.conv1(x))
-        x = F.max_pool2d(x, 2)
-        x = F.relu(self.conv2(x))
-        x = F.max_pool2d(x, 2)
-        x = self.dropout(x)
-        x = self.flatten(x)
-        x = F.relu(self.fc1(x))
         x = self.fc2(x)
 
         # QSA-NN
@@ -113,5 +102,7 @@ class HybridCNNQSA(Module):
 
         # Post-QSA Classical Linear layer
         x = self.output_layer(x)
+
+        x = cat((x, 1 - x), -1)
 
         return x

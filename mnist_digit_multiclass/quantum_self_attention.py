@@ -1,3 +1,5 @@
+from numpy import sin, pi
+
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 
@@ -21,6 +23,10 @@ class QuantumSelfAttention:
         self.theta = Parameter('theta')
         self.phi = Parameter('phi')
         self.g = Parameter('g')
+
+        self.x_2 = Parameter('x_2')
+        self.x_3 = Parameter('x_3')
+        self.x_4 = Parameter('x_4')
 
         # Parameters
         self.parameters = None
@@ -54,6 +60,10 @@ class QuantumSelfAttention:
         # Rotation gate on q0
         self.circuit.ry(self.x_1, 0)
 
+        self.circuit.ry(self.x_2, 1)
+        self.circuit.ry(self.x_3, 2)
+        self.circuit.ry(self.x_4, 3)
+
     def circuit_parameters(self):
         """
         Sets the parameters to be optimized for the circuit.
@@ -62,7 +72,8 @@ class QuantumSelfAttention:
              A set containing all parameters.
         """
         # Set parameters
-        self.parameters = {self.x_0, self.x_1, self.theta, self.phi, self.g}
+        self.parameters = {self.x_0, self.x_1, self.theta, self.phi, self.g,
+                           self.x_2, self.x_3, self.x_4}
 
         return self.parameters
 
