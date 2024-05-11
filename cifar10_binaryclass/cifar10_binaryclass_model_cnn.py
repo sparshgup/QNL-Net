@@ -21,7 +21,6 @@ sys.path.append(parent_dir)
 
 from quantum_self_attention import QuantumSelfAttention
 
-
 num_qubits = 4
 output_shape = 2  # Number of classes
 
@@ -79,11 +78,11 @@ class HybridCNNQSA(Module):
     """
     def __init__(self, qsa_nn):
         super().__init__()
-        self.conv1 = Conv2d(1, 2, kernel_size=5)
-        self.conv2 = Conv2d(2, 16, kernel_size=5)
+        self.conv1 = Conv2d(3, 6, kernel_size=5)
+        self.conv2 = Conv2d(6, 12, kernel_size=5)
         self.dropout = Dropout2d()
         self.flatten = Flatten()
-        self.fc1 = Linear(256, 128)
+        self.fc1 = Linear(300, 128)
         self.fc2 = Linear(128, num_qubits)  # 4 inputs to Quan-SANN
 
         # Apply torch connector, weights chosen

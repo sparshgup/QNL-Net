@@ -6,8 +6,9 @@ from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchsummary import summary
+import csv
 
-from cifar10_binaryclass_model import create_qsa_nn, HybridCNNQSA
+from cifar10_binaryclass_model_cnn import create_qsa_nn, HybridCNNQSA
 
 # -----------------------------------------------------------------------------
 # Model
@@ -36,9 +37,9 @@ batch_size = 1
 n_train_samples = 50000
 n_test_samples = 10000
 num_epochs = 25
-lr = 2e-4
+lr = 3e-4
 
-# Use pre-defined torchvision function to load MNIST data
+# Use pre-defined torchvision function to load CIFAR10 data
 train_dataset = datasets.CIFAR10(
     root="./data",
     train=True,
@@ -104,6 +105,8 @@ scheduler = ExponentialLR(optimizer, gamma=0.9)
 
 model.train()  # Set model to training mode
 
+epoch_data = []
+
 for epoch in range(num_epochs):
     total_loss = 0
     correct_train = 0
@@ -135,9 +138,21 @@ for epoch in range(num_epochs):
 
     test_accuracy = correct_test / total_test
 
+    epoch_data.append((epoch + 1, epoch_loss, epoch_accuracy_train, test_accuracy))
+
     print("Epoch {}: Train Loss: {:.4f}; Train Accuracy: {:.4f}; Test Accuracy: {:.4f}".format(
         epoch + 1, epoch_loss, epoch_accuracy_train, test_accuracy))
 
     model.train()  # Set model back to training mode
     scheduler.step()  # Adjust learning rate for next epoch
+print("================================================================")
+
+# Write metrics to CSV file
+csv_file = "epoch_data_cifar10_binaryclass_cnn_02.csv"
+with open(csv_file, 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
+    writer.writerows(epoch_data)
+
+print(f"Epoch metrics saved to {csv_file}.")
 print("================================================================")

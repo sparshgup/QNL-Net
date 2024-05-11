@@ -1,5 +1,5 @@
 # Data
-mnist_digit_binaryclass_cnn/data
+mnist_digit_binaryclass/data
 mnist_digit_multiclass/data
 cifar10_binaryclass/data
 mnist_fashion_binaryclass/data

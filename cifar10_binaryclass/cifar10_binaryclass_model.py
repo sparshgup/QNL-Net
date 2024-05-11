@@ -3,13 +3,9 @@ import os
 import torch
 from torch.nn import (
     Module,
-    Conv2d,
     Linear,
-    Dropout2d,
-    Flatten,
 )
 from torch import cat
-import torch.nn.functional as F
 from qiskit_machine_learning.connectors import TorchConnector
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZFeatureMap
@@ -20,6 +16,7 @@ parent_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(parent_dir)
 
 from quantum_self_attention import QuantumSelfAttention
+
 
 num_qubits = 4
 output_shape = 2  # Number of classes
@@ -67,10 +64,10 @@ def create_qsa_nn():
     return qsa_nn
 
 
-# Define torch Module for Hybrid CNN-QSA
-class HybridCNNQSA(Module):
+# Define torch Module for Hybrid QSA
+class HybridClassicalQSA(Module):
     """
-    HybridCNNQSA is a hybrid quantum-classical convolutional neural network
+    HybridCNNQSA is a hybrid quantum-classical PCA
     with Quantum Self Attention.
 
     Args:
@@ -78,12 +75,8 @@ class HybridCNNQSA(Module):
     """
     def __init__(self, qsa_nn):
         super().__init__()
-        self.conv1 = Conv2d(3, 6, kernel_size=5)
-        self.conv2 = Conv2d(6, 12, kernel_size=5)
-        self.dropout = Dropout2d()
-        self.flatten = Flatten()
-        self.fc1 = Linear(300, 128)
-        self.fc2 = Linear(128, num_qubits)  # 4 inputs to Quan-SANN
+
+        self.fc2 = Linear(4, num_qubits)  # 4 inputs to Quan-SANN
 
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].
@@ -102,14 +95,6 @@ class HybridCNNQSA(Module):
         Returns:
             x (torch.Tensor): Output tensor.
         """
-        # CNN
-        x = F.relu(self.conv1(x))
-        x = F.max_pool2d(x, 2)
-        x = F.relu(self.conv2(x))
-        x = F.max_pool2d(x, 2)
-        x = self.dropout(x)
-        x = self.flatten(x)
-        x = F.relu(self.fc1(x))
         x = self.fc2(x)
 
         # QSA-NN
