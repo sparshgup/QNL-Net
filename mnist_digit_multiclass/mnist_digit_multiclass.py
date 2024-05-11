@@ -6,6 +6,7 @@ from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 from torchsummary import summary
+import csv
 
 from mnist_digit_multiclass_model import create_qsa_nn, HybridCNNQSA
 
@@ -14,8 +15,12 @@ from mnist_digit_multiclass_model import create_qsa_nn, HybridCNNQSA
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
-
-qsa_nn = create_qsa_nn()
+feature_map_reps = 1
+ansatz = 0
+ansatz_reps = 1
+num_epochs = 15
+lr = 1e-4
+qsa_nn = create_qsa_nn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridCNNQSA(qsa_nn)
 
 print("================================================================")
@@ -35,8 +40,6 @@ manual_seed(239)
 batch_size = 1
 n_train_samples = 60000
 n_test_samples = 20000
-num_epochs = 15
-lr = 1e-4
 
 # Use pre-defined torchvision function to load MNIST data
 train_dataset = datasets.MNIST(
@@ -106,6 +109,8 @@ scheduler = ExponentialLR(optimizer, gamma=0.9)
 
 model.train()  # Set model to training mode
 
+epoch_data = []
+
 for epoch in range(num_epochs):
     total_loss = 0
     correct_train = 0
@@ -137,9 +142,21 @@ for epoch in range(num_epochs):
 
     test_accuracy = correct_test / total_test
 
+    epoch_data.append((epoch + 1, epoch_loss, epoch_accuracy_train, test_accuracy))
+
     print("Epoch {}: Train Loss: {:.4f}; Train Accuracy: {:.4f}; Test Accuracy: {:.4f}".format(
         epoch + 1, epoch_loss, epoch_accuracy_train, test_accuracy))
 
     model.train()  # Set model back to training mode
     scheduler.step()  # Adjust learning rate for next epoch
+print("================================================================")
+
+# Write metrics to CSV file
+csv_file = f"epoch_data/mnist_digit_multiclass_cnn__z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
+with open(csv_file, 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
+    writer.writerows(epoch_data)
+
+print(f"Epoch metrics saved to {csv_file}.")
 print("================================================================")

@@ -15,8 +15,12 @@ from mnist_digit_binaryclass_model_cnn import create_qsa_nn, HybridCNNQSA
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
-
-qsa_nn = create_qsa_nn()
+feature_map_reps = 1
+ansatz = 0
+ansatz_reps = 1
+num_epochs = 25
+lr = 1e-4
+qsa_nn = create_qsa_nn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridCNNQSA(qsa_nn)
 
 print("================================================================")
@@ -36,8 +40,6 @@ manual_seed(239)
 batch_size = 1
 n_train_samples = 60000
 n_test_samples = 20000
-num_epochs = 25
-lr = 1e-4
 
 # Use pre-defined torchvision function to load MNIST data
 train_dataset = datasets.MNIST(
@@ -58,13 +60,13 @@ test_dataset = datasets.MNIST(
 
 # Filter out labels
 train_idx = np.append(
-    np.where(np.array(train_dataset.targets) == 4)[0][:n_train_samples],
-    np.where(np.array(train_dataset.targets) == 9)[0][:n_train_samples]
+    np.where(np.array(train_dataset.targets) == 0)[0][:n_train_samples],
+    np.where(np.array(train_dataset.targets) == 1)[0][:n_train_samples]
 )
 
 test_idx = np.append(
-    np.where(np.array(test_dataset.targets) == 4)[0][:n_test_samples],
-    np.where(np.array(test_dataset.targets) == 9)[0][:n_test_samples]
+    np.where(np.array(test_dataset.targets) == 0)[0][:n_test_samples],
+    np.where(np.array(test_dataset.targets) == 1)[0][:n_test_samples]
 )
 
 train_dataset.data = train_dataset.data[train_idx]
@@ -74,11 +76,11 @@ test_dataset.data = test_dataset.data[test_idx]
 test_dataset.targets = np.array(test_dataset.targets)[test_idx]
 
 # Encode desired classes as targets
-train_dataset.targets[train_dataset.targets == 4] = 0
-train_dataset.targets[train_dataset.targets == 9] = 1
+train_dataset.targets[train_dataset.targets == 0] = 0
+train_dataset.targets[train_dataset.targets == 1] = 1
 
-test_dataset.targets[test_dataset.targets == 4] = 0
-test_dataset.targets[test_dataset.targets == 9] = 1
+test_dataset.targets[test_dataset.targets == 0] = 0
+test_dataset.targets[test_dataset.targets == 1] = 1
 
 # Define torch dataloaders
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -142,7 +144,7 @@ for epoch in range(num_epochs):
 print("================================================================")
 
 # Write metrics to CSV file
-csv_file = "epoch_data_mnist_digit_binaryclass_cnn_49.csv"
+csv_file = f"epoch_data/mnist_digit_binaryclass_cnn_01_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
 with open(csv_file, 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])

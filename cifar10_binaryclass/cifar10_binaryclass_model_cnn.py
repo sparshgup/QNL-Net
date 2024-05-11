@@ -31,7 +31,7 @@ def parity(x):
 
 
 # Compose Quantum Self-Attention Neural Network with Feature Map
-def create_qsa_nn():
+def create_qsa_nn(feature_map_reps, ansatz, ansatz_reps):
     """
     Compose Quantum Self-Attention Neural Network with Feature Map
     utilizing EstimatorQNN.
@@ -40,10 +40,10 @@ def create_qsa_nn():
         Quantum neural network with self-attention.
     """
     # Feature Map for Encoding
-    feature_map = ZFeatureMap(num_qubits)
+    feature_map = ZFeatureMap(num_qubits, reps=feature_map_reps)
 
     # Quantum Self Attention circuit
-    qsa = QuantumSelfAttention(num_qubits=num_qubits)
+    qsa = QuantumSelfAttention(num_qubits=num_qubits, ansatz=ansatz, ansatz_reps=ansatz_reps)
     qsa_circuit = qsa.get_circuit()
 
     # QSA NN circuit

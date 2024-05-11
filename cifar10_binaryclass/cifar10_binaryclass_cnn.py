@@ -15,8 +15,13 @@ from cifar10_binaryclass_model_cnn import create_qsa_nn, HybridCNNQSA
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
+feature_map_reps = 1
+ansatz = 0
+ansatz_reps = 1
+num_epochs = 25
+lr = 3e-4
 
-qsa_nn = create_qsa_nn()
+qsa_nn = create_qsa_nn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridCNNQSA(qsa_nn)
 
 print("================================================================")
@@ -36,8 +41,6 @@ manual_seed(239)
 batch_size = 1
 n_train_samples = 50000
 n_test_samples = 10000
-num_epochs = 25
-lr = 3e-4
 
 # Use pre-defined torchvision function to load CIFAR10 data
 train_dataset = datasets.CIFAR10(
@@ -148,7 +151,7 @@ for epoch in range(num_epochs):
 print("================================================================")
 
 # Write metrics to CSV file
-csv_file = "epoch_data_cifar10_binaryclass_cnn_02.csv"
+csv_file = f"epoch_data/cifar10_binaryclass_cnn_02_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
 with open(csv_file, 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])

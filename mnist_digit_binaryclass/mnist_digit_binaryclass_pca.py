@@ -17,8 +17,12 @@ from mnist_digit_binaryclass_model import create_qsa_nn, HybridClassicalQSA
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
-
-qsa_nn = create_qsa_nn()
+feature_map_reps = 1
+ansatz = 0
+ansatz_reps = 1
+num_epochs = 25
+lr = 1.5e-4
+qsa_nn = create_qsa_nn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridClassicalQSA(qsa_nn)
 
 print("================================================================")
@@ -38,8 +42,6 @@ manual_seed(239)
 batch_size = 1
 n_train_samples = 60000
 n_test_samples = 20000
-num_epochs = 25
-lr = 1.5e-4
 
 # Use pre-defined torchvision function to load MNIST data
 train_dataset = datasets.MNIST(
@@ -165,7 +167,7 @@ for epoch in range(num_epochs):
 print("================================================================")
 
 # Write metrics to CSV file
-csv_file = "epoch_data_mnist_digit_binaryclass_pca_49.csv"
+csv_file = f"epoch_data/mnist_digit_binaryclass_pca_49_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
 with open(csv_file, 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
