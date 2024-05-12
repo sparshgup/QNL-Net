@@ -16,10 +16,10 @@ from mnist_digit_binaryclass_model_cnn import create_qsa_nn, HybridCNNQSA
 
 num_qubits = 4
 feature_map_reps = 1
-ansatz = 0
+ansatz = 2
 ansatz_reps = 1
 num_epochs = 25
-lr = 1e-4
+lr = 0.75e-4
 qsa_nn = create_qsa_nn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridCNNQSA(qsa_nn)
 
@@ -143,12 +143,14 @@ for epoch in range(num_epochs):
     scheduler.step()  # Adjust learning rate for next epoch
 print("================================================================")
 
-# Write metrics to CSV file
-csv_file = f"epoch_data/mnist_digit_binaryclass_cnn_01_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
-with open(csv_file, 'w', newline='') as f:
-    writer = csv.writer(f)
-    writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
-    writer.writerows(epoch_data)
 
-print(f"Epoch metrics saved to {csv_file}.")
-print("================================================================")
+def save_to_csv():
+    # Write metrics to CSV file
+    csv_file = f"epoch_data/mnist_digit_binaryclass_cnn_01_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
+    with open(csv_file, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
+        writer.writerows(epoch_data)
+
+    print(f"Epoch metrics saved to {csv_file}.")
+    print("================================================================")

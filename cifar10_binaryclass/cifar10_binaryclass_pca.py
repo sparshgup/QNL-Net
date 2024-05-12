@@ -172,12 +172,14 @@ for epoch in range(num_epochs):
     scheduler.step()  # Adjust learning rate for next epoch
 print("================================================================")
 
-# Write metrics to CSV file
-csv_file = f"epoch_data/cifar10_binaryclass_pca_02_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
-with open(csv_file, 'w', newline='') as f:
-    writer = csv.writer(f)
-    writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
-    writer.writerows(epoch_data)
 
-print(f"Epoch metrics saved to {csv_file}.")
-print("================================================================")
+def save_to_csv():
+    # Write metrics to CSV file
+    csv_file = f"epoch_data/cifar10_binaryclass_pca_02_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
+    with open(csv_file, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
+        writer.writerows(epoch_data)
+
+    print(f"Epoch metrics saved to {csv_file}.")
+    print("================================================================")
