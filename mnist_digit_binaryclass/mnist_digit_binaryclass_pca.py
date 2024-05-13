@@ -18,7 +18,7 @@ from mnist_digit_binaryclass_model import create_qsa_nn, HybridClassicalQSA
 
 num_qubits = 4
 feature_map_reps = 1
-ansatz = 0
+ansatz = 2
 ansatz_reps = 3
 num_epochs = 40
 lr = 4e-4

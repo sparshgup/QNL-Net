@@ -15,11 +15,11 @@ from mnist_digit_binaryclass_model_cnn import create_qsa_nn, HybridCNNQSA
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
-feature_map_reps = 1
-ansatz = 2
-ansatz_reps = 1
+feature_map_reps = 2
+ansatz = 1
+ansatz_reps = 3
 num_epochs = 25
-lr = 0.75e-4
+lr = 1e-4
 qsa_nn = create_qsa_nn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridCNNQSA(qsa_nn)
 
