@@ -10,7 +10,7 @@ from torchsummary import summary
 import csv
 from sklearn.decomposition import PCA
 
-from cifar10_binaryclass_model import create_qsa_nn, HybridClassicalQSA
+from cifar10_binaryclass_model import create_quan_sam, HybridClassicalQSA
 
 # -----------------------------------------------------------------------------
 # Model
@@ -22,11 +22,11 @@ ansatz = 0
 ansatz_reps = 1
 num_epochs = 25
 lr = 1.5e-4
-qsa_nn = create_qsa_nn(feature_map_reps, ansatz, ansatz_reps)
-model = HybridClassicalQSA(qsa_nn)
+quan_sam = create_quan_sam(feature_map_reps, ansatz, ansatz_reps)
+model = HybridClassicalQSA(quan_sam)
 
 print("================================================================")
-print("Hybrid PCA-Quan-SANN model Instantiated")
+print("Hybrid PCA-Quan-SAM model Instantiated")
 print("================================================================")
 print("Model Architecture")
 summary(model, input_size=(3, 32, 32))  # Adjust input size to match PCA output

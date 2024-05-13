@@ -31,10 +31,10 @@ def parity(x):
     return f"{bin(x)}".count("1") % 2
 
 
-# Compose Quantum Self-Attention Neural Network with Feature Map
-def create_qsa_nn(feature_map_reps, ansatz, ansatz_reps):
+# Compose Quantum Self-Attention Mechanism with Feature Map
+def create_quan_sam(feature_map_reps, ansatz, ansatz_reps):
     """
-    Compose Quantum Self-Attention Neural Network with Feature Map
+    Compose Quantum Self-Attention Mechanism with Feature Map
     utilizing EstimatorQNN.
 
     Returns:
@@ -57,7 +57,7 @@ def create_qsa_nn(feature_map_reps, ansatz, ansatz_reps):
     observable = SparsePauliOp(pauli_z_qubit0)
 
     # REMEMBER TO SET input_gradients=True FOR ENABLING HYBRID GRADIENT BACKPROP
-    qsa_nn = EstimatorQNN(
+    quan_sam = EstimatorQNN(
         circuit=qc,
         observables=observable,
         input_params=feature_map.parameters,
@@ -65,7 +65,7 @@ def create_qsa_nn(feature_map_reps, ansatz, ansatz_reps):
         input_gradients=True,
     )
 
-    return qsa_nn
+    return quan_sam
 
 
 # Define torch Module for Hybrid CNN-QSA

@@ -24,10 +24,10 @@ num_qubits = 4
 output_shape = 4  # Number of classes
 
 
-# Compose Quantum Self-Attention Neural Network with Feature Map
-def create_qsa_nn(feature_map_reps, ansatz, ansatz_reps):
+# Compose Quantum Self-Attention Mechanism with Feature Map
+def create_quan_sam(feature_map_reps, ansatz, ansatz_reps):
     """
-    Compose Quantum Self-Attention Neural Network with Feature Map
+    Compose Quantum Self-Attention Mechanism with Feature Map
     utilizing SamplerQNN.
 
     Returns:
@@ -46,14 +46,14 @@ def create_qsa_nn(feature_map_reps, ansatz, ansatz_reps):
     qc.compose(qsa_circuit, inplace=True)
 
     # REMEMBER TO SET input_gradients=True FOR ENABLING HYBRID GRADIENT BACKPROP
-    qsa_nn = SamplerQNN(
+    quan_sam = SamplerQNN(
         circuit=qc,
         input_params=feature_map.parameters,
         weight_params=qsa.circuit_parameters(),
         output_shape=output_shape,
     )
 
-    return qsa_nn
+    return quan_sam
 
 
 # Define torch Module for Hybrid CNN-QSA

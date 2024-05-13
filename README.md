@@ -1,4 +1,4 @@
-# Quantum Self-Attention
+# Quan-SAM
 
-The repository for the code of Quan-SANN: A Scalable 
-Quantum Self-Attention Neural Network for Computer Vision.
+The repository that houses the code for Quan-SAM: A Scalable 
+Quantum Self-Attention Mechanism for Computer Vision.
