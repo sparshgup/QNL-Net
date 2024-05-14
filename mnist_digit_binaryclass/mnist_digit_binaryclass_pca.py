@@ -17,11 +17,11 @@ from mnist_digit_binaryclass_model import create_quan_sam, HybridClassicalQSA
 # -----------------------------------------------------------------------------
 
 num_qubits = 4
-feature_map_reps = 1
-ansatz = 2
-ansatz_reps = 3
+feature_map_reps = 2
+ansatz = 1
+ansatz_reps = 1
 num_epochs = 40
-lr = 4e-4
+lr = 1.5e-4
 quan_sam = create_quan_sam(feature_map_reps, ansatz, ansatz_reps)
 model = HybridClassicalQSA(quan_sam)
 

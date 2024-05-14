@@ -1,7 +1,6 @@
 import sys
 import os
 import torch
-from torch import cat
 from torch.nn import (
     Module,
     Conv2d,
@@ -9,26 +8,34 @@ from torch.nn import (
     Dropout2d,
     Flatten,
 )
+from torch import cat
 import torch.nn.functional as F
 from qiskit_machine_learning.connectors import TorchConnector
 from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZFeatureMap
-from qiskit_machine_learning.neural_networks import SamplerQNN
+from qiskit_machine_learning.neural_networks import EstimatorQNN
+from qiskit.quantum_info import SparsePauliOp, Pauli
 
 parent_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(parent_dir)
 
 from quantum_self_attention import QuantumSelfAttention
 
+
 num_qubits = 4
-output_shape = 4  # Number of classes
+output_shape = 2  # Number of classes
+
+
+# Interpret for EstimatorQNN
+def parity(x):
+    return f"{bin(x)}".count("1") % 2
 
 
 # Compose Quantum Self-Attention Mechanism with Feature Map
 def create_quan_sam(feature_map_reps, ansatz, ansatz_reps):
     """
     Compose Quantum Self-Attention Mechanism with Feature Map
-    utilizing SamplerQNN.
+    utilizing EstimatorQNN.
 
     Returns:
         Quantum neural network with self-attention.
@@ -45,12 +52,17 @@ def create_quan_sam(feature_map_reps, ansatz, ansatz_reps):
     qc.compose(feature_map, inplace=True)
     qc.compose(qsa_circuit, inplace=True)
 
+    # EstimatorQNN Observable
+    pauli_z_qubit0 = Pauli('Z' + 'I' * (num_qubits - 1))
+    observable = SparsePauliOp(pauli_z_qubit0)
+
     # REMEMBER TO SET input_gradients=True FOR ENABLING HYBRID GRADIENT BACKPROP
-    quan_sam = SamplerQNN(
+    quan_sam = EstimatorQNN(
         circuit=qc,
+        observables=observable,
         input_params=feature_map.parameters,
         weight_params=qsa.circuit_parameters(),
-        output_shape=output_shape,
+        input_gradients=True,
     )
 
     return quan_sam
@@ -65,7 +77,6 @@ class HybridCNNQSA(Module):
     Args:
         qsa_nn: Quantum neural network with self-attention.
     """
-
     def __init__(self, qsa_nn):
         super().__init__()
         self.conv1 = Conv2d(1, 2, kernel_size=5)
@@ -80,7 +91,7 @@ class HybridCNNQSA(Module):
         self.qsa_nn = TorchConnector(qsa_nn)
 
         # output from QSA-NN
-        self.output_layer = Linear(16, output_shape)
+        self.output_layer = Linear(1, 1)
 
     def forward(self, x):
         """
@@ -107,5 +118,7 @@ class HybridCNNQSA(Module):
 
         # Post-QSA Classical Linear layer
         x = self.output_layer(x)
+
+        x = cat((x, 1 - x), -1)
 
         return x

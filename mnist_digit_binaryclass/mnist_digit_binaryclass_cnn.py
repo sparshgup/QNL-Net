@@ -16,7 +16,7 @@ from mnist_digit_binaryclass_model_cnn import create_quan_sam, HybridCNNQSA
 
 num_qubits = 4
 feature_map_reps = 2
-ansatz = 1
+ansatz = 2
 ansatz_reps = 3
 num_epochs = 25
 lr = 1e-4
