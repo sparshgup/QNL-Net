@@ -2,11 +2,11 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 
 
-class QuantumSelfAttention:
+class QNLNNCircuit:
     def __init__(self, num_qubits=4, ansatz=0, ansatz_reps=1):
         """
-        QuantumSelfAttention class implements a quantum circuit
-        for self-attention.
+        QNLNNCircuit class implements a quantum circuit
+        for a non-local neural network.
 
         Args:
              num_qubits: The number of qubit used in the circuit. It is fixed
@@ -44,7 +44,7 @@ class QuantumSelfAttention:
 
     def build_circuit(self):
         """
-        Builds the quantum self-attention circuit with the desired ansatz
+        Builds the QNLNN circuit with the desired ansatz
         and number of repetitions
         """
         if self.ansatz == 0:

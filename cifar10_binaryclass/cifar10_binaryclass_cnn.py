@@ -8,24 +8,23 @@ from torchvision import datasets, transforms
 from torchsummary import summary
 import csv
 
-from cifar10_binaryclass_model_cnn import create_quan_sam, HybridCNNQSA
+from cifar10_binaryclass_model_cnn import create_qnlnn, HybridCNNQNLNN
 
 # -----------------------------------------------------------------------------
 # Model
 # -----------------------------------------------------------------------------
 
-num_qubits = 4
 feature_map_reps = 1
 ansatz = 0
 ansatz_reps = 1
 num_epochs = 25
 lr = 3e-4
 
-quan_sam = create_quan_sam(feature_map_reps, ansatz, ansatz_reps)
-model = HybridCNNQSA(quan_sam)
+qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
+model = HybridCNNQNLNN(qnlnn)
 
 print("================================================================")
-print("Hybrid CNN-Quan-SAM model Instantiated")
+print("Hybrid CNN-QNLNN model Instantiated")
 print("================================================================")
 print("Model Architecture")
 summary(model, input_size=(3, 32, 32))

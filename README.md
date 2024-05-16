@@ -1,4 +1,4 @@
-# Quan-SAM
+# QNLNN
 
-The repository that houses the code for Quan-SAM: A Scalable 
-Quantum Self-Attention Mechanism for Computer Vision.
+The repository that houses the code for 
+QNLNN: A Scalable Quantum Non-local Neural Network for Computer Vision.

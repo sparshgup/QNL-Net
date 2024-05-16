@@ -15,7 +15,7 @@ from qiskit.quantum_info import SparsePauliOp, Pauli
 parent_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(parent_dir)
 
-from quantum_self_attention import QuantumSelfAttention
+from qnlnn_circuit import QNLNNCircuit
 
 
 num_qubits = 4
@@ -27,67 +27,64 @@ def parity(x):
     return f"{bin(x)}".count("1") % 2
 
 
-# Compose Quantum Self-Attention Mechanism with Feature Map
-def create_quan_sam(feature_map_reps, ansatz, ansatz_reps):
+# Compose QNLNN with Feature Map
+def create_qnlnn(feature_map_reps, ansatz, ansatz_reps):
     """
-    Compose Quantum Self-Attention Mechanism with Feature Map
-    utilizing EstimatorQNN.
+    Compose QNLNN with Feature Map utilizing EstimatorQNN.
 
     Returns:
-        Quantum neural network with self-attention.
+        Quantum non-local neural network.
     """
     # Feature Map for Encoding
     feature_map = ZFeatureMap(num_qubits, reps=feature_map_reps)
 
-    # Quantum Self Attention circuit
-    qsa = QuantumSelfAttention(num_qubits=num_qubits, ansatz=ansatz, ansatz_reps=ansatz_reps)
-    qsa_circuit = qsa.get_circuit()
+    # QNLNN circuit
+    qnlnn_instance = QNLNNCircuit(num_qubits=num_qubits, ansatz=ansatz, ansatz_reps=ansatz_reps)
+    qnlnn_circuit = qnlnn_instance.get_circuit()
 
-    # QSA NN circuit
     qc = QuantumCircuit(num_qubits)
     qc.compose(feature_map, inplace=True)
-    qc.compose(qsa_circuit, inplace=True)
+    qc.compose(qnlnn_circuit, inplace=True)
 
     # EstimatorQNN Observable
     pauli_z_qubit0 = Pauli('Z' + 'I' * (num_qubits - 1))
     observable = SparsePauliOp(pauli_z_qubit0)
 
     # REMEMBER TO SET input_gradients=True FOR ENABLING HYBRID GRADIENT BACKPROP
-    quan_sam = EstimatorQNN(
+    qnlnn = EstimatorQNN(
         circuit=qc,
         observables=observable,
         input_params=feature_map.parameters,
-        weight_params=qsa.circuit_parameters(),
+        weight_params=qnlnn_instance.circuit_parameters(),
         input_gradients=True,
     )
 
-    return quan_sam
+    return qnlnn
 
 
-# Define torch Module for Hybrid QSA
-class HybridClassicalQSA(Module):
+# Define torch Module for Hybrid QNLNN
+class HybridClassicalQNLNN(Module):
     """
-    HybridCNNQSA is a hybrid quantum-classical PCA
-    with Quantum Self Attention.
+    HybridCNNQNLNN is a hybrid quantum-classical PCA with QNLNN.
 
     Args:
-        qsa_nn: Quantum neural network with self-attention.
+        qnlnn: Quantum non-local neural network.
     """
-    def __init__(self, qsa_nn):
+    def __init__(self, qnlnn):
         super().__init__()
 
-        self.fc2 = Linear(4, num_qubits)  # 4 inputs to Quan-SANN
+        self.fc2 = Linear(4, num_qubits)  # 4 inputs to QNLNN
 
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].
-        self.qsa_nn = TorchConnector(qsa_nn)
+        self.qnlnn = TorchConnector(qnlnn)
 
-        # output from QSA-NN
+        # output from QNLNN
         self.output_layer = Linear(1, 1)
 
     def forward(self, x):
         """
-        Forward pass of the HybridCNNQSA.
+        Forward pass of the HybridCNNQNLNN.
 
         Args:
             x (torch.Tensor): Input tensor.
@@ -97,10 +94,10 @@ class HybridClassicalQSA(Module):
         """
         x = self.fc2(x)
 
-        # QSA-NN
-        x = self.qsa_nn.forward(x)
+        # QNLNN
+        x = self.qnlnn.forward(x)
 
-        # Post-QSA Classical Linear layer
+        # Post-QNLNN Classical Linear layer
         x = self.output_layer(x)
 
         x = cat((x, 1 - x), -1)
