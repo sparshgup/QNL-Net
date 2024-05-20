@@ -1,9 +1,8 @@
-import sys
-import os
 import torch
 from torch.nn import (
     Module,
     Linear,
+    Flatten,
 )
 from torch import cat
 from qiskit_machine_learning.connectors import TorchConnector
@@ -11,9 +10,6 @@ from qiskit import QuantumCircuit
 from qiskit.circuit.library import ZFeatureMap
 from qiskit_machine_learning.neural_networks import EstimatorQNN
 from qiskit.quantum_info import SparsePauliOp, Pauli
-
-parent_dir = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(parent_dir)
 
 from qnlnn_circuit import QNLNNCircuit
 
@@ -27,13 +23,14 @@ def parity(x):
     return f"{bin(x)}".count("1") % 2
 
 
-# Compose QNLNN with Feature Map
+# Compose Quantum Self-Attention Mechanism with Feature Map
 def create_qnlnn(feature_map_reps, ansatz, ansatz_reps):
     """
-    Compose QNLNN with Feature Map utilizing EstimatorQNN.
+    Compose Quantum Self-Attention Mechanism with Feature Map
+    utilizing EstimatorQNN.
 
     Returns:
-        Quantum non-local neural network.
+        Quantum neural network with self-attention.
     """
     # Feature Map for Encoding
     feature_map = ZFeatureMap(num_qubits, reps=feature_map_reps)
@@ -73,7 +70,7 @@ class HybridClassicalQNLNN(Module):
     def __init__(self, qnlnn):
         super().__init__()
 
-        self.fc2 = Linear(4, num_qubits)  # 4 inputs to QNLNN
+        self.fc2 = Linear(4, num_qubits)  # 4 inputs to Quan-SAM
 
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].

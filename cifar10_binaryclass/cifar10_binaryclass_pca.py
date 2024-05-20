@@ -10,7 +10,7 @@ from torchsummary import summary
 import csv
 from sklearn.decomposition import PCA
 
-from cifar10_binaryclass_model import create_qnlnn, HybridClassicalQNLNN
+from cifar10_binaryclass_model_pca import create_qnlnn, HybridClassicalQNLNN
 
 # -----------------------------------------------------------------------------
 # Model
@@ -19,8 +19,8 @@ from cifar10_binaryclass_model import create_qnlnn, HybridClassicalQNLNN
 feature_map_reps = 1
 ansatz = 0
 ansatz_reps = 1
-num_epochs = 25
-lr = 1.5e-4
+num_epochs = 50
+lr = 4e-4
 qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridClassicalQNLNN(qnlnn)
 
@@ -28,7 +28,7 @@ print("================================================================")
 print("Hybrid PCA-QNLNN model Instantiated")
 print("================================================================")
 print("Model Architecture")
-summary(model, input_size=(3, 32, 32))  # Adjust input size to match PCA output
+summary(model, input_size=(1, 1, 4))  # Adjust input size to match PCA output
 print("================================================================")
 
 # -----------------------------------------------------------------------------
@@ -67,13 +67,13 @@ test_dataset = datasets.CIFAR10(
 
 # Filter out labels
 train_idx = np.append(
-    np.where(np.array(train_dataset.targets) == 0)[0][:n_train_samples],
-    np.where(np.array(train_dataset.targets) == 2)[0][:n_train_samples]
+    np.where(np.array(train_dataset.targets) == 2)[0][:n_train_samples],
+    np.where(np.array(train_dataset.targets) == 8)[0][:n_train_samples]
 )
 
 test_idx = np.append(
-    np.where(np.array(test_dataset.targets) == 0)[0][:n_test_samples],
-    np.where(np.array(test_dataset.targets) == 2)[0][:n_test_samples]
+    np.where(np.array(test_dataset.targets) == 2)[0][:n_test_samples],
+    np.where(np.array(test_dataset.targets) == 8)[0][:n_test_samples]
 )
 
 train_dataset.data = train_dataset.data[train_idx]
@@ -83,11 +83,11 @@ test_dataset.data = test_dataset.data[test_idx]
 test_dataset.targets = np.array(test_dataset.targets)[test_idx]
 
 # Encode desired classes as targets
-train_dataset.targets[train_dataset.targets == 0] = 0
-train_dataset.targets[train_dataset.targets == 2] = 1
+train_dataset.targets[train_dataset.targets == 2] = 0
+train_dataset.targets[train_dataset.targets == 8] = 1
 
-test_dataset.targets[test_dataset.targets == 0] = 0
-test_dataset.targets[test_dataset.targets == 2] = 1
+test_dataset.targets[test_dataset.targets == 2] = 0
+test_dataset.targets[test_dataset.targets == 8] = 1
 
 # Define torch dataloaders
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -102,9 +102,13 @@ print("================================================================")
 # PCA Transformation
 # -----------------------------------------------------------------------------
 
-# Reshape data for PCA
-train_data = train_dataset.data.view(len(train_dataset), -1).numpy()
-test_data = test_dataset.data.view(len(test_dataset), -1).numpy()
+# Convert data to tensor and reshape for PCA
+train_data_tensor = torch.tensor(train_dataset.data).reshape(len(train_dataset), -1)
+test_data_tensor = torch.tensor(test_dataset.data).reshape(len(test_dataset), -1)
+
+# Convert tensors to numpy for PCA
+train_data = train_data_tensor.numpy()
+test_data = test_data_tensor.numpy()
 
 # Apply PCA
 pca = PCA(n_components=4)
@@ -174,7 +178,7 @@ print("================================================================")
 
 def save_to_csv():
     # Write metrics to CSV file
-    csv_file = f"epoch_data/cifar10_binaryclass_pca_02_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
+    csv_file = f"epoch_data/cifar10_binaryclass_pca_28_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
     with open(csv_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])

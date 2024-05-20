@@ -10,15 +10,15 @@ from torchsummary import summary
 import csv
 from sklearn.decomposition import PCA
 
-from mnist_digit_binaryclass_model import create_qnlnn, HybridClassicalQNLNN
+from mnist_digit_binaryclass_model_pca import create_qnlnn, HybridClassicalQNLNN
 
 # -----------------------------------------------------------------------------
 # Model
 # -----------------------------------------------------------------------------
 
-feature_map_reps = 3
-ansatz = 1
-ansatz_reps = 2
+feature_map_reps = 1
+ansatz = 0
+ansatz_reps = 1
 num_epochs = 40
 lr = 1.5e-4
 qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
@@ -28,7 +28,7 @@ print("================================================================")
 print("Hybrid PCA-QNLNN model Instantiated")
 print("================================================================")
 print("Model Architecture")
-summary(model, input_size=(1, 4, 4))  # Adjust input size to match PCA output
+summary(model, input_size=(1, 1, 4))  # Adjust input size to match PCA output
 print("================================================================")
 
 # -----------------------------------------------------------------------------

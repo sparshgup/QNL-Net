@@ -15,9 +15,9 @@ from cifar10_binaryclass_model_cnn import create_qnlnn, HybridCNNQNLNN
 # -----------------------------------------------------------------------------
 
 feature_map_reps = 1
-ansatz = 0
-ansatz_reps = 1
-num_epochs = 25
+ansatz = 2
+ansatz_reps = 3
+num_epochs = 50
 lr = 3e-4
 
 qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
@@ -66,13 +66,13 @@ test_dataset = datasets.CIFAR10(
 
 # Filter out labels
 train_idx = np.append(
-    np.where(np.array(train_dataset.targets) == 0)[0][:n_train_samples],
-    np.where(np.array(train_dataset.targets) == 2)[0][:n_train_samples]
+    np.where(np.array(train_dataset.targets) == 2)[0][:n_train_samples],
+    np.where(np.array(train_dataset.targets) == 8)[0][:n_train_samples]
 )
 
 test_idx = np.append(
-    np.where(np.array(test_dataset.targets) == 0)[0][:n_test_samples],
-    np.where(np.array(test_dataset.targets) == 2)[0][:n_test_samples]
+    np.where(np.array(test_dataset.targets) == 2)[0][:n_test_samples],
+    np.where(np.array(test_dataset.targets) == 8)[0][:n_test_samples]
 )
 
 train_dataset.data = train_dataset.data[train_idx]
@@ -82,11 +82,11 @@ test_dataset.data = test_dataset.data[test_idx]
 test_dataset.targets = np.array(test_dataset.targets)[test_idx]
 
 # Encode desired classes as targets
-train_dataset.targets[train_dataset.targets == 0] = 0
-train_dataset.targets[train_dataset.targets == 2] = 1
+train_dataset.targets[train_dataset.targets == 2] = 0
+train_dataset.targets[train_dataset.targets == 8] = 1
 
-test_dataset.targets[test_dataset.targets == 0] = 0
-test_dataset.targets[test_dataset.targets == 2] = 1
+test_dataset.targets[test_dataset.targets == 2] = 0
+test_dataset.targets[test_dataset.targets == 8] = 1
 
 # Define torch dataloaders
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -152,7 +152,7 @@ print("================================================================")
 
 def save_to_csv():
     # Write metrics to CSV file
-    csv_file = f"epoch_data/cifar10_binaryclass_cnn_02_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
+    csv_file = f"epoch_data/cifar10_binaryclass_cnn_28_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
     with open(csv_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])

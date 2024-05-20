@@ -73,10 +73,10 @@ class HybridCNNQNLNN(Module):
     def __init__(self, qnlnn):
         super().__init__()
         self.conv1 = Conv2d(3, 6, kernel_size=5)
-        self.conv2 = Conv2d(6, 12, kernel_size=5)
+        self.conv2 = Conv2d(6, 16, kernel_size=5)
         self.dropout = Dropout2d()
         self.flatten = Flatten()
-        self.fc1 = Linear(300, 128)
+        self.fc1 = Linear(256, 128)
         self.fc2 = Linear(128, num_qubits)  # 4 inputs to QNLNN
 
         # Apply torch connector, weights chosen

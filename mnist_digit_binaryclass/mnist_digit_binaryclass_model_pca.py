@@ -22,14 +22,13 @@ def parity(x):
     return f"{bin(x)}".count("1") % 2
 
 
-# Compose Quantum Self-Attention Mechanism with Feature Map
+# Compose QNLNN with Feature Map
 def create_qnlnn(feature_map_reps, ansatz, ansatz_reps):
     """
-    Compose Quantum Self-Attention Mechanism with Feature Map
-    utilizing EstimatorQNN.
+    Compose QNLNN with Feature Map utilizing EstimatorQNN.
 
     Returns:
-        Quantum neural network with self-attention.
+        Quantum non-local neural network.
     """
     # Feature Map for Encoding
     feature_map = ZFeatureMap(num_qubits, reps=feature_map_reps)
@@ -69,7 +68,7 @@ class HybridClassicalQNLNN(Module):
     def __init__(self, qnlnn):
         super().__init__()
 
-        self.fc2 = Linear(4, num_qubits)  # 4 inputs to Quan-SAM
+        self.fc2 = Linear(4, num_qubits)  # 4 inputs to QNLNN
 
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].
