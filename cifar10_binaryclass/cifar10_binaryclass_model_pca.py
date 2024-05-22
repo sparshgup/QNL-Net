@@ -2,7 +2,6 @@ import torch
 from torch.nn import (
     Module,
     Linear,
-    Flatten,
 )
 from torch import cat
 from qiskit_machine_learning.connectors import TorchConnector
@@ -16,11 +15,6 @@ from qnlnn_circuit import QNLNNCircuit
 
 num_qubits = 4
 output_shape = 2  # Number of classes
-
-
-# Interpret for EstimatorQNN
-def parity(x):
-    return f"{bin(x)}".count("1") % 2
 
 
 # Compose Quantum Self-Attention Mechanism with Feature Map

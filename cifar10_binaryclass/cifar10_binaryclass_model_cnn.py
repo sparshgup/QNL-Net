@@ -20,11 +20,6 @@ num_qubits = 4
 output_shape = 2  # Number of classes
 
 
-# Interpret for EstimatorQNN
-def parity(x):
-    return f"{bin(x)}".count("1") % 2
-
-
 # Compose QNLNN Mechanism with Feature Map
 def create_qnlnn(feature_map_reps, ansatz, ansatz_reps):
     """

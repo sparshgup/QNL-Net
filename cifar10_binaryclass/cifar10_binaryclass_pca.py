@@ -17,9 +17,9 @@ from cifar10_binaryclass_model_pca import create_qnlnn, HybridClassicalQNLNN
 # -----------------------------------------------------------------------------
 
 feature_map_reps = 1
-ansatz = 0
-ansatz_reps = 1
-num_epochs = 50
+ansatz = 2
+ansatz_reps = 3
+num_epochs = 100
 lr = 4e-4
 qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridClassicalQNLNN(qnlnn)

@@ -51,7 +51,7 @@ style = {
 #####################################################
 x = Parameter('x')
 theta = Parameter('θ')
-phi = Parameter('φ')
+phi = Parameter('ϕ')
 g = Parameter('g')
 
 circuit = QuantumCircuit(4)
@@ -82,12 +82,13 @@ circuit.draw(output='mpl', style=style, initial_state=True, filename="./docs/mod
 # Ansatz 0
 #####################################################
 ansatz0 = QuantumCircuit(4)
-x = Parameter('x')
-theta = Parameter('θ')
-phi = Parameter('φ')
-g = Parameter('g')
+x_0 = Parameter('x\u2080')
+x_1 = Parameter('x\u2081')
+theta = Parameter('θ\u2080')
+phi = Parameter('ϕ\u2080')
+g = Parameter('g\u2080')
 
-ansatz0.ry(x, 0)
+ansatz0.ry(x_0, 0)
 ansatz0.ry(theta, 1)
 ansatz0.ry(phi, 2)
 ansatz0.rx(g, 3)
@@ -96,7 +97,7 @@ ansatz0.cx(1, 2)
 ansatz0.cx(2, 3)
 ansatz0.cx(3, 0)
 
-ansatz0.rz(x, 0)
+ansatz0.rz(x_1, 0)
 
 ansatz0.draw(output='mpl', style=style, initial_state=True, filename="./docs/ansatz0.png")
 
@@ -105,7 +106,7 @@ ansatz0.draw(output='mpl', style=style, initial_state=True, filename="./docs/ans
 #####################################################
 ansatz1 = QuantumCircuit(4)
 
-ansatz1.ry(x, 0)
+ansatz1.ry(x_0, 0)
 ansatz1.ry(theta, 1)
 ansatz1.ry(phi, 2)
 ansatz1.rx(g, 3)
@@ -114,7 +115,7 @@ ansatz1.cx(3, 2)
 ansatz1.cx(2, 1)
 ansatz1.cx(1, 0)
 
-ansatz1.rz(x, 0)
+ansatz1.rz(x_1, 0)
 
 ansatz1.draw(output='mpl', style=style, initial_state=True, filename="./docs/ansatz1.png")
 
@@ -123,7 +124,7 @@ ansatz1.draw(output='mpl', style=style, initial_state=True, filename="./docs/ans
 #####################################################
 ansatz2 = QuantumCircuit(4)
 
-ansatz2.ry(x, 0)
+ansatz2.ry(x_0, 0)
 ansatz2.ry(theta, 1)
 ansatz2.ry(phi, 2)
 ansatz2.rx(g, 3)
@@ -132,6 +133,6 @@ ansatz2.cx(1, 3)
 ansatz2.cx(3, 2)
 ansatz2.cx(2, 0)
 
-ansatz2.rz(x, 0)
+ansatz2.rz(x_1, 0)
 
 ansatz2.draw(output='mpl', style=style, initial_state=True, filename="./docs/ansatz2.png")
