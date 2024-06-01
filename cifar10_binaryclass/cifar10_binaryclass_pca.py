@@ -16,11 +16,11 @@ from cifar10_binaryclass_model_pca import create_qnlnn, HybridClassicalQNLNN
 # Model
 # -----------------------------------------------------------------------------
 
-feature_map_reps = 1
-ansatz = 2
-ansatz_reps = 3
+ansatz = 0
+feature_map_reps = 2
+ansatz_reps = 2
 num_epochs = 100
-lr = 4e-4
+lr = 3e-4
 qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridClassicalQNLNN(qnlnn)
 
@@ -89,7 +89,7 @@ train_dataset.targets[train_dataset.targets == 8] = 1
 test_dataset.targets[test_dataset.targets == 2] = 0
 test_dataset.targets[test_dataset.targets == 8] = 1
 
-# Define torch dataloaders
+# Define torch dataloader
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
