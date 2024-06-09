@@ -88,7 +88,7 @@ theta = Parameter('θ\u2080')
 phi = Parameter('ϕ\u2080')
 g = Parameter('g\u2080')
 
-ansatz0.ry(x_0, 0)
+ansatz0.rz(x_0, 0)
 ansatz0.ry(theta, 1)
 ansatz0.ry(phi, 2)
 ansatz0.rx(g, 3)
@@ -106,7 +106,7 @@ ansatz0.draw(output='mpl', style=style, initial_state=True, filename="./docs/ans
 #####################################################
 ansatz1 = QuantumCircuit(4)
 
-ansatz1.ry(x_0, 0)
+ansatz1.rz(x_0, 0)
 ansatz1.ry(theta, 1)
 ansatz1.ry(phi, 2)
 ansatz1.rx(g, 3)
@@ -124,7 +124,7 @@ ansatz1.draw(output='mpl', style=style, initial_state=True, filename="./docs/ans
 #####################################################
 ansatz2 = QuantumCircuit(4)
 
-ansatz2.ry(x_0, 0)
+ansatz2.rz(x_0, 0)
 ansatz2.ry(theta, 1)
 ansatz2.ry(phi, 2)
 ansatz2.rx(g, 3)

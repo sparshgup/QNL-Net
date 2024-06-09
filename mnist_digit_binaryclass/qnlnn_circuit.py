@@ -73,7 +73,7 @@ class QNLNNCircuit:
 
     def ansatz_0_1(self):
         # rep 1
-        self.circuit.ry(self.x_0, 0)
+        self.circuit.rz(self.x_0, 0)
         self.circuit.ry(self.theta_0, 1)
         self.circuit.ry(self.phi_0, 2)
         self.circuit.rx(self.g_0, 3)
@@ -86,7 +86,7 @@ class QNLNNCircuit:
 
     def ansatz_0_2(self):
         # rep 1
-        self.circuit.ry(self.x_0, 0)
+        self.circuit.rz(self.x_0, 0)
         self.circuit.ry(self.theta_0, 1)
         self.circuit.ry(self.phi_0, 2)
         self.circuit.rx(self.g_0, 3)
@@ -98,7 +98,7 @@ class QNLNNCircuit:
         self.circuit.rz(self.x_1, 0)
 
         # rep 2
-        self.circuit.ry(self.x_2, 0)
+        self.circuit.rz(self.x_2, 0)
         self.circuit.ry(self.theta_1, 1)
         self.circuit.ry(self.phi_1, 2)
         self.circuit.rx(self.g_1, 3)
@@ -111,7 +111,7 @@ class QNLNNCircuit:
 
     def ansatz_0_3(self):
         # rep 1
-        self.circuit.ry(self.x_0, 0)
+        self.circuit.rz(self.x_0, 0)
         self.circuit.ry(self.theta_0, 1)
         self.circuit.ry(self.phi_0, 2)
         self.circuit.rx(self.g_0, 3)
@@ -123,7 +123,7 @@ class QNLNNCircuit:
         self.circuit.rz(self.x_1, 0)
 
         # rep 2
-        self.circuit.ry(self.x_2, 0)
+        self.circuit.rz(self.x_2, 0)
         self.circuit.ry(self.theta_1, 1)
         self.circuit.ry(self.phi_1, 2)
         self.circuit.rx(self.g_1, 3)
@@ -135,7 +135,7 @@ class QNLNNCircuit:
         self.circuit.rz(self.x_3, 0)
 
         # rep 3
-        self.circuit.ry(self.x_4, 0)
+        self.circuit.rz(self.x_4, 0)
         self.circuit.ry(self.theta_2, 1)
         self.circuit.ry(self.phi_2, 2)
         self.circuit.rx(self.g_2, 3)
@@ -148,7 +148,7 @@ class QNLNNCircuit:
 
     def ansatz_1_1(self):
         # rep 1
-        self.circuit.ry(self.x_0, 0)
+        self.circuit.rz(self.x_0, 0)
         self.circuit.ry(self.theta_0, 1)
         self.circuit.ry(self.phi_0, 2)
         self.circuit.rx(self.g_0, 3)
@@ -161,7 +161,7 @@ class QNLNNCircuit:
 
     def ansatz_1_2(self):
         # rep 1
-        self.circuit.ry(self.x_0, 0)
+        self.circuit.rz(self.x_0, 0)
         self.circuit.ry(self.theta_0, 1)
         self.circuit.ry(self.phi_0, 2)
         self.circuit.rx(self.g_0, 3)
@@ -173,7 +173,7 @@ class QNLNNCircuit:
         self.circuit.rz(self.x_1, 0)
 
         # rep 2
-        self.circuit.ry(self.x_2, 0)
+        self.circuit.rz(self.x_2, 0)
         self.circuit.ry(self.theta_1, 1)
         self.circuit.ry(self.phi_1, 2)
         self.circuit.rx(self.g_1, 3)
@@ -186,7 +186,7 @@ class QNLNNCircuit:
 
     def ansatz_1_3(self):
         # rep 1
-        self.circuit.ry(self.x_0, 0)
+        self.circuit.rz(self.x_0, 0)
         self.circuit.ry(self.theta_0, 1)
         self.circuit.ry(self.phi_0, 2)
         self.circuit.rx(self.g_0, 3)
@@ -198,7 +198,7 @@ class QNLNNCircuit:
         self.circuit.rz(self.x_1, 0)
 
         # rep 2
-        self.circuit.ry(self.x_2, 0)
+        self.circuit.rz(self.x_2, 0)
         self.circuit.ry(self.theta_1, 1)
         self.circuit.ry(self.phi_1, 2)
         self.circuit.rx(self.g_1, 3)
@@ -210,7 +210,7 @@ class QNLNNCircuit:
         self.circuit.rz(self.x_3, 0)
 
         # rep 3
-        self.circuit.ry(self.x_4, 0)
+        self.circuit.rz(self.x_4, 0)
         self.circuit.ry(self.theta_2, 1)
         self.circuit.ry(self.phi_2, 2)
         self.circuit.rx(self.g_2, 3)
@@ -223,7 +223,7 @@ class QNLNNCircuit:
 
     def ansatz_2_1(self):
         # rep 1
-        self.circuit.ry(self.x_0, 0)
+        self.circuit.rz(self.x_0, 0)
         self.circuit.ry(self.theta_0, 1)
         self.circuit.ry(self.phi_0, 2)
         self.circuit.rx(self.g_0, 3)
@@ -236,7 +236,7 @@ class QNLNNCircuit:
 
     def ansatz_2_2(self):
         # rep 1
-        self.circuit.ry(self.x_0, 0)
+        self.circuit.rz(self.x_0, 0)
         self.circuit.ry(self.theta_0, 1)
         self.circuit.ry(self.phi_0, 2)
         self.circuit.rx(self.g_0, 3)
@@ -248,7 +248,7 @@ class QNLNNCircuit:
         self.circuit.rz(self.x_1, 0)
 
         # rep 2
-        self.circuit.ry(self.x_2, 0)
+        self.circuit.rz(self.x_2, 0)
         self.circuit.ry(self.theta_1, 1)
         self.circuit.ry(self.phi_1, 2)
         self.circuit.rx(self.g_1, 3)
@@ -261,7 +261,7 @@ class QNLNNCircuit:
 
     def ansatz_2_3(self):
         # rep 1
-        self.circuit.ry(self.x_0, 0)
+        self.circuit.rz(self.x_0, 0)
         self.circuit.ry(self.theta_0, 1)
         self.circuit.ry(self.phi_0, 2)
         self.circuit.rx(self.g_0, 3)
@@ -273,7 +273,7 @@ class QNLNNCircuit:
         self.circuit.rz(self.x_1, 0)
 
         # rep 2
-        self.circuit.ry(self.x_2, 0)
+        self.circuit.rz(self.x_2, 0)
         self.circuit.ry(self.theta_1, 1)
         self.circuit.ry(self.phi_1, 2)
         self.circuit.rx(self.g_1, 3)
@@ -285,7 +285,7 @@ class QNLNNCircuit:
         self.circuit.rz(self.x_3, 0)
 
         # rep 3
-        self.circuit.ry(self.x_4, 0)
+        self.circuit.rz(self.x_4, 0)
         self.circuit.ry(self.theta_2, 1)
         self.circuit.ry(self.phi_2, 2)
         self.circuit.rx(self.g_2, 3)

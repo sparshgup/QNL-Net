@@ -16,7 +16,7 @@ from mnist_digit_binaryclass_model_pca import create_qnlnn, HybridClassicalQNLNN
 # Model
 # -----------------------------------------------------------------------------
 
-ansatz = 0
+ansatz = 2
 feature_map_reps = 1
 ansatz_reps = 1
 num_epochs = 40
