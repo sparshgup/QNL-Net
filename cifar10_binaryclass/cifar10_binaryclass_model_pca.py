@@ -3,6 +3,7 @@ from torch.nn import (
     Module,
     Linear,
 )
+import torch.nn.functional as F
 from torch import cat
 from qiskit_machine_learning.connectors import TorchConnector
 from qiskit import QuantumCircuit

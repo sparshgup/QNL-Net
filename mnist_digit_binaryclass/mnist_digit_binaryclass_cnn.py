@@ -14,10 +14,10 @@ from mnist_digit_binaryclass_model_cnn import create_qnlnn, HybridCNNQNLNN
 # Model
 # -----------------------------------------------------------------------------
 
-ansatz = 2
-feature_map_reps = 3
-ansatz_reps = 3
-num_epochs = 25
+ansatz = 0
+feature_map_reps = 1
+ansatz_reps = 2
+num_epochs = 100
 lr = 1e-4
 qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
 model = HybridCNNQNLNN(qnlnn)
@@ -145,7 +145,7 @@ print("================================================================")
 
 def save_to_csv():
     # Write metrics to CSV file
-    csv_file = f"epoch_data/mnist_digit_binaryclass_cnn_01_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
+    csv_file = f"epoch_data/mnist_digit_binaryclass_cnn_01_{ansatz}{feature_map_reps}{ansatz_reps}.csv"
     with open(csv_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
@@ -153,3 +153,6 @@ def save_to_csv():
 
     print(f"Epoch metrics saved to {csv_file}.")
     print("================================================================")
+
+
+save_to_csv()

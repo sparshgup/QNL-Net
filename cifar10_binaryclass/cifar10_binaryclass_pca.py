@@ -16,9 +16,9 @@ from cifar10_binaryclass_model_pca import create_qnlnn, HybridClassicalQNLNN
 # Model
 # -----------------------------------------------------------------------------
 
-ansatz = 1
-feature_map_reps = 3
-ansatz_reps = 2
+ansatz = 0
+feature_map_reps = 1
+ansatz_reps = 1
 num_epochs = 100
 lr = 4e-4
 qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
@@ -186,3 +186,6 @@ def save_to_csv():
 
     print(f"Epoch metrics saved to {csv_file}.")
     print("================================================================")
+
+
+# save_to_csv()
