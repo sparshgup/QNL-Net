@@ -16,7 +16,7 @@ from mnist_digit_binaryclass_model_cnn import create_qnlnn, HybridCNNQNLNN
 
 ansatz = 0
 feature_map_reps = 1
-ansatz_reps = 2
+ansatz_reps = 1
 num_epochs = 100
 lr = 1e-4
 qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)

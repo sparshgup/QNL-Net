@@ -16,9 +16,9 @@ from mnist_digit_binaryclass_model_pca import create_qnlnn, HybridClassicalQNLNN
 # Model
 # -----------------------------------------------------------------------------
 
-ansatz = 2
+ansatz = 0
 feature_map_reps = 1
-ansatz_reps = 2
+ansatz_reps = 1
 num_epochs = 100
 lr = 1.5e-4
 qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
@@ -178,4 +178,4 @@ def save_to_csv():
     print("================================================================")
 
 
-# save_to_csv()
+save_to_csv()
