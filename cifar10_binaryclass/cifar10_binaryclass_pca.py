@@ -178,7 +178,7 @@ print("================================================================")
 
 def save_to_csv():
     # Write metrics to CSV file
-    csv_file = f"epoch_data/cifar10_binaryclass_pca_28_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
+    csv_file = f"epoch_data/cifar10_binaryclass_pca_28_{ansatz}{feature_map_reps}{ansatz_reps}.csv"
     with open(csv_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
@@ -188,4 +188,4 @@ def save_to_csv():
     print("================================================================")
 
 
-# save_to_csv()
+save_to_csv()

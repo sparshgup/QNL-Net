@@ -15,8 +15,8 @@ from cifar10_binaryclass_model_cnn import create_qnlnn, HybridCNNQNLNN
 # -----------------------------------------------------------------------------
 
 ansatz = 0
-feature_map_reps = 3
-ansatz_reps = 3
+feature_map_reps = 1
+ansatz_reps = 1
 num_epochs = 100
 lr = 3e-4
 
@@ -152,7 +152,7 @@ print("================================================================")
 
 def save_to_csv():
     # Write metrics to CSV file
-    csv_file = f"epoch_data/cifar10_binaryclass_cnn_28_z{feature_map_reps}_a{ansatz}{ansatz_reps}.csv"
+    csv_file = f"epoch_data/cifar10_binaryclass_cnn_28_{ansatz}{feature_map_reps}{ansatz_reps}.csv"
     with open(csv_file, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["Epoch", "Train Loss", "Train Accuracy", "Test Accuracy"])
@@ -160,3 +160,6 @@ def save_to_csv():
 
     print(f"Epoch metrics saved to {csv_file}.")
     print("================================================================")
+
+
+save_to_csv()
