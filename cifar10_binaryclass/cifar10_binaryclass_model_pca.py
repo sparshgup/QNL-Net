@@ -3,7 +3,6 @@ from torch.nn import (
     Module,
     Linear,
 )
-import torch.nn.functional as F
 from torch import cat
 from qiskit_machine_learning.connectors import TorchConnector
 from qiskit import QuantumCircuit
@@ -11,72 +10,71 @@ from qiskit.circuit.library import ZFeatureMap
 from qiskit_machine_learning.neural_networks import EstimatorQNN
 from qiskit.quantum_info import SparsePauliOp, Pauli
 
-from qnlnn_circuit import QNLNNCircuit
+from qnlnet_circuit import QNLNetCircuit
 
 
 num_qubits = 4
 output_shape = 2  # Number of classes
 
 
-# Compose Quantum Self-Attention Mechanism with Feature Map
-def create_qnlnn(feature_map_reps, ansatz, ansatz_reps):
+# Compose QNL-Net Mechanism with Feature Map
+def create_qnlnet(feature_map_reps, ansatz, ansatz_reps):
     """
-    Compose Quantum Self-Attention Mechanism with Feature Map
-    utilizing EstimatorQNN.
+    Compose QNL-Net Mechanism with Feature Map utilizing EstimatorQNN.
 
     Returns:
-        Quantum neural network with self-attention.
+        Quantum non-local neural network.
     """
     # Feature Map for Encoding
     feature_map = ZFeatureMap(num_qubits, reps=feature_map_reps)
 
-    # QNLNN circuit
-    qnlnn_instance = QNLNNCircuit(num_qubits=num_qubits, ansatz=ansatz, ansatz_reps=ansatz_reps)
-    qnlnn_circuit = qnlnn_instance.get_circuit()
+    # QNL-Net circuit
+    qnlnet_instance = QNLNetCircuit(num_qubits=num_qubits, ansatz=ansatz, ansatz_reps=ansatz_reps)
+    qnlnet_circuit = qnlnet_instance.get_circuit()
 
     qc = QuantumCircuit(num_qubits)
     qc.compose(feature_map, inplace=True)
-    qc.compose(qnlnn_circuit, inplace=True)
+    qc.compose(qnlnet_circuit, inplace=True)
 
     # EstimatorQNN Observable
     pauli_z_qubit0 = Pauli('Z' + 'I' * (num_qubits - 1))
     observable = SparsePauliOp(pauli_z_qubit0)
 
     # REMEMBER TO SET input_gradients=True FOR ENABLING HYBRID GRADIENT BACKPROP
-    qnlnn = EstimatorQNN(
+    qnlnet = EstimatorQNN(
         circuit=qc,
         observables=observable,
         input_params=feature_map.parameters,
-        weight_params=qnlnn_instance.circuit_parameters(),
+        weight_params=qnlnet_instance.circuit_parameters(),
         input_gradients=True,
     )
 
-    return qnlnn
+    return qnlnet
 
 
-# Define torch Module for Hybrid QNLNN
-class HybridClassicalQNLNN(Module):
+# Define torch Module for Hybrid PCA-QNL-Net
+class HybridClassicalQNLNet(Module):
     """
-    HybridCNNQNLNN is a hybrid quantum-classical PCA with QNLNN.
+    HybridCNNQNLNet is a hybrid quantum-classical PCA with QNL-Net.
 
     Args:
-        qnlnn: Quantum non-local neural network.
+        qnlnet: Quantum non-local neural network.
     """
-    def __init__(self, qnlnn):
+    def __init__(self, qnlnet):
         super().__init__()
 
-        self.fc2 = Linear(4, num_qubits)  # 4 inputs to Quan-SAM
+        self.fc2 = Linear(4, num_qubits)  # 4 inputs to QNL-Net
 
         # Apply torch connector, weights chosen
         # uniformly at random from interval [-1,1].
-        self.qnlnn = TorchConnector(qnlnn)
+        self.qnlnet = TorchConnector(qnlnet)
 
-        # output from QNLNN
+        # output from QNL-Net
         self.output_layer = Linear(1, 1)
 
     def forward(self, x):
         """
-        Forward pass of the HybridCNNQNLNN.
+        Forward pass of the HybridClassicalQNLNet.
 
         Args:
             x (torch.Tensor): Input tensor.
@@ -86,10 +84,10 @@ class HybridClassicalQNLNN(Module):
         """
         x = self.fc2(x)
 
-        # QNLNN
-        x = self.qnlnn.forward(x)
+        # QNL-Net
+        x = self.qnlnet.forward(x)
 
-        # Post-QNLNN Classical Linear layer
+        # Post-QNL-Net Classical Linear layer
         x = self.output_layer(x)
 
         x = cat((x, 1 - x), -1)

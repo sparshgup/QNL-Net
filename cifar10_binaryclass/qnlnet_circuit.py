@@ -2,7 +2,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 
 
-class QNLNNCircuit:
+class QNLNetCircuit:
     def __init__(self, num_qubits=4, ansatz=0, ansatz_reps=1):
         """
         QNLNNCircuit class implements a quantum circuit

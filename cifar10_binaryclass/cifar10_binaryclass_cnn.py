@@ -8,7 +8,7 @@ from torchvision import datasets, transforms
 from torchsummary import summary
 import csv
 
-from cifar10_binaryclass_model_cnn import create_qnlnn, HybridCNNQNLNN
+from cifar10_binaryclass_model_cnn import create_qnlnet, HybridCNNQNLNet
 
 # -----------------------------------------------------------------------------
 # Model
@@ -20,11 +20,11 @@ ansatz_reps = 1
 num_epochs = 100
 lr = 3e-4
 
-qnlnn = create_qnlnn(feature_map_reps, ansatz, ansatz_reps)
-model = HybridCNNQNLNN(qnlnn)
+qnlnn = create_qnlnet(feature_map_reps, ansatz, ansatz_reps)
+model = HybridCNNQNLNet(qnlnn)
 
 print("================================================================")
-print("Hybrid CNN-QNLNN model Instantiated")
+print("Hybrid CNN-QNL-Net model Instantiated")
 print("================================================================")
 print("Model Architecture")
 summary(model, input_size=(3, 32, 32))
