@@ -1,6 +1,6 @@
 # QNL-Net
 
-This repository houses the code for "A Scalable Quantum Non-local Neural Network for Computer Vision."
+This repository houses the code for "A Scalable Quantum Non-local Neural Network for Image Classification"
 
 ## QNL-Net Module
 
