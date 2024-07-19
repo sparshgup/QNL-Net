@@ -36,7 +36,7 @@ Alternatively, you can simply build a virtual environment using an IDE based on 
 
 ## Execution
 
-- The code files to run the models are also present within the desired dataset directories are simply named as `{dataset}_{cnn/pca}.py`.
+- The code files to run the models are also present within the desired dataset directories and are simply named as `{dataset}_{cnn/pca}.py`.
 - The datasets are automatically downloaded by PyTorch when the scripts are run.
 - The ansatz, feature map reps, ansatz reps, number of epochs, learning rate, and the binary classes to classify can all be configured within these scripts.
 - The training data for the model runs is stored in the `epoch_data` subdirectory within the relevant directories `mnist_digit_binaryclass` and `cifar10_binaryclass`.
