@@ -39,7 +39,11 @@ style = {
             "#000000"
         ],
         "unitary": [
-            "#2a2e2e",
+            "#0a3463",
+            "#FFFFFF"
+        ],
+        "measure": [
+            "#000000",
             "#FFFFFF"
         ]
     }
